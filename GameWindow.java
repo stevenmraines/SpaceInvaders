@@ -25,3 +25,4 @@ public class GameWindow extends JFrame {
 		GameWindow window = new GameWindow();
 	}
 }
+
