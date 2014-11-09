@@ -54,8 +54,4 @@ public abstract class ScreenObject {
 	
 	abstract public void draw(Graphics g);
 
-	public void move() {
-		// TODO Auto-generated method stub
-		
-	}
 }
