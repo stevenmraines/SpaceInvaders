@@ -14,8 +14,10 @@ import java.awt.Rectangle;
 public abstract class MovingScreenObject extends ScreenObject 
 {
 	
-	ObjectVector arbitraryVector;
-	Image arbitraryImage;
+	protected ObjectVector arbitraryVector;
+	protected Image arbitraryImage;
+	protected double angle;
+	
 	
 	/**
 	 * 
@@ -24,10 +26,11 @@ public abstract class MovingScreenObject extends ScreenObject
 	 * @param i
 	 */
 	
-	public MovingScreenObject(Point location, Rectangle size, Image i)
+	public MovingScreenObject(Point location, Rectangle size, Image i, double angle)
 	{
 		super(location, size);
 		arbitraryImage = i;
+		this.angle = angle;
 	}
 	/* (non-Javadoc)
 	 * @see ScreenObject#draw(java.awt.Graphics)
@@ -91,6 +94,20 @@ public abstract class MovingScreenObject extends ScreenObject
 	 */
 	public void setArbitraryImage(Image arbitraryImage) {
 		this.arbitraryImage = arbitraryImage;
+	}
+
+	/**
+	 * @return the angle
+	 */
+	public double getAngle() {
+		return angle;
+	}
+
+	/**
+	 * @param angle the angle to set
+	 */
+	public void setAngle(double angle) {
+		this.angle = angle;
 	}
 	
 }
