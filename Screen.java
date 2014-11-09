@@ -23,14 +23,14 @@ import javax.swing.Timer;
  */
 public class Screen extends JPanel {
 	public static int screenWidth = 800;
-	public static int screenHeight = 1200;
+	public static int screenHeight = 1000;
 	private ArrayList<ScreenObject> screenObjects;
 	private javax.swing.Timer timer;
 	//public static ImageIcon backgroundImg = new ImageIcon("JIM'S BACKGROUND");
 	public static ImageIcon invaderImg1 = new ImageIcon("invader1.jpg");
 	public static ImageIcon invaderImg2 = new ImageIcon("invader2.jpg");
 	public static ImageIcon invaderImg3 = new ImageIcon("invader3.gif");
-	public static ImageIcon laserCannonImg = new ImageIcon("laserCannon.jpg");
+	public static ImageIcon laserCannonImg = new ImageIcon("laserCannon.png");
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
 	public static ImageIcon bunkerImg = new ImageIcon("bunker.png");
 	
@@ -89,9 +89,9 @@ public class Screen extends JPanel {
 		//add the laser cannon
 		
 		int x = screenWidth / 2;
-		int y = screenHeight / 5;
+		int y = 850;
 		
-		Ship laserCannon = new Ship(new Point(x, y), new Rectangle(20,20), laserCannonImg.getImage());
+		Ship laserCannon = new Ship(new Point(x, y), new Rectangle(60,60), laserCannonImg.getImage());
 		laserCannon.setArbitraryVector(new ObjectVector(0,0));
 		laserCannon.setAngle(90);
 		screenObjects.add(0, laserCannon);
