@@ -3,9 +3,6 @@ SpaceInvaders
 
 Guys,
 
-Make sure to look at the Wiki! It's to the right. It has the images I've found so far. I have already added them to the source code. You'll obviously need to add these images to your SpaceInvaders folder in order to see the program work properly. At this point, I have the ship in its correct position on the screen.
+I've finished adding the bunkers and invaders to the screen. Check it out. They are not yet moving or anything like that, but it's still nice to see on the screen.
 
-Thanks,
-
-Derick.
-
+ - Derick.
