@@ -1,18 +1,13 @@
 import java.awt.Graphics;
+import java.awt.Image;
 //Bunkers are not moving objects and thus extends ScreenObject.
 import java.awt.Point;
 import java.awt.Rectangle;
 
-public class Bunker extends ScreenObject {
-
-	public Bunker(Point location, Rectangle size){
-		super(location, size);
+public class Bunker extends MovingScreenObject {
+	public Bunker(Point location, Rectangle size, Image i){
+		super(location, size, i, 0);
 	}
-	@Override
-	public void draw(Graphics g) {
-		// TODO Auto-generated method stub
-
 	}
 
-}
 
