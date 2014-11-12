@@ -10,7 +10,6 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Iterator;
-
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -32,11 +31,15 @@ public class Screen extends JPanel
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
 	public static ImageIcon bunkerImg = new ImageIcon("bunker.png");
 	
-	public static int invaderWidth = 50;
-	public static int invaderHeight = 50;
+	public static int invaderWidth = 45;
+	public static int invaderHeight = 45;
 	public static int invader1Points = 10;
 	public static int invader2Points = 20;
 	public static int invader3Points = 40;
+	public static ObjectVector invaderVector = new ObjectVector(1,0);
+	public static int invaderY = Invader.getBaseY();
+	public int startAdding = screenWidth / 5;
+	public int endAdding = startAdding*4;
 	
 	private int lives = 3;
 	
@@ -98,8 +101,11 @@ public class Screen extends JPanel
 		Bunker bunker2 = new Bunker(new Point(bunkerX*2,bunkerY), new Rectangle(80, 60), bunkerImg.getImage());
 		Bunker bunker3 = new Bunker(new Point(bunkerX*3,bunkerY), new Rectangle(80, 60), bunkerImg.getImage());
 		Bunker bunker4 = new Bunker(new Point(bunkerX*4,bunkerY), new Rectangle(80,60), bunkerImg.getImage());
-		bunker1.setArbitraryVector(new ObjectVector(0,0));
-		bunker1.setAngle(90);
+		ObjectVector bunkerVector = new ObjectVector(0,0);
+		bunker1.setArbitraryVector(bunkerVector);
+		bunker2.setArbitraryVector(bunkerVector);
+		bunker3.setArbitraryVector(bunkerVector);
+		bunker4.setArbitraryVector(bunkerVector);
 		screenObjects.add(bunker1);
 		screenObjects.add(bunker2);
 		screenObjects.add(bunker3);
@@ -107,95 +113,34 @@ public class Screen extends JPanel
 		
 		//add the invaders
 		
-		int startAdding = screenWidth / 5;
-		int endAdding = startAdding * 4;
 		
-		//add the first row of invaders
+		//add the invaders
 		
 		for (int addPoint = endAdding; startAdding < endAdding; endAdding = endAdding - 50)
 		{
 			
 		int	invaderX = endAdding;
-		int	invaderY = 500;
-			
-		int invaderWidth = 45;
-		int invaderHeight = 45;
-		int invader1Points = 10;
-		
-		Invader invader1 = new Invader(new Point(invaderX,invaderY), new Rectangle(invaderWidth, invaderHeight), invader1Points, invaderImg1.getImage());
+		int	invaderY1 = invaderY;
+		int invaderY2 = invaderY - 50;
+		int invaderY3 = invaderY - 100;
+		int invaderY4 = invaderY - 150;
+		int invaderY5 = invaderY - 200;
+		Invader invader1 = new Invader(new Point(invaderX,invaderY1), new Rectangle(invaderWidth, invaderHeight), invader1Points, invaderImg1.getImage());
+		Invader invader2 = new Invader(new Point(invaderX,invaderY2), new Rectangle(invaderWidth, invaderHeight), invader1Points, invaderImg1.getImage());
+		Invader invader3 = new Invader(new Point(invaderX,invaderY3), new Rectangle(invaderWidth, invaderHeight), invader2Points, invaderImg2.getImage());
+		Invader invader4 = new Invader(new Point(invaderX,invaderY4), new Rectangle(invaderWidth, invaderHeight), invader2Points, invaderImg2.getImage());
+		Invader invader5 = new Invader(new Point(invaderX,invaderY5), new Rectangle(invaderWidth, invaderHeight), invader3Points, invaderImg3.getImage());
+		invader1.setArbitraryVector(invaderVector);
+		invader2.setArbitraryVector(invaderVector);
+		invader3.setArbitraryVector(invaderVector);
+		invader4.setArbitraryVector(invaderVector);
+		invader5.setArbitraryVector(invaderVector);
 		screenObjects.add(invader1);
-		}
-		
-		//add the second row of invaders
-		
-		int startAdding2 = screenWidth/5;
-		int endAdding2 = startAdding*4;
-		
-		for (int addPoint = endAdding2; startAdding2 < endAdding2; endAdding2 = endAdding2 - 50)
-		{
-		int	invaderX = endAdding2;
-		int	invaderY = 450;
-			
-		int invaderWidth = 45;
-		int invaderHeight = 45;
-		int invader1Points = 10;
-		
-		Invader invader1 = new Invader(new Point(invaderX,invaderY), new Rectangle(invaderWidth, invaderHeight), invader1Points, invaderImg1.getImage());
-		screenObjects.add(invader1);
-		}
-		
-		//add the third row of invaders
-		int startAdding3 = screenWidth/5;
-		int endAdding3 = startAdding*4;
-		
-		for (int addPoint = endAdding3; startAdding3 < endAdding3; endAdding3 = endAdding3 - 50)
-		{
-		int	invaderX = endAdding3;
-		int	invaderY = 400;
-			
-		int invaderWidth = 45;
-		int invaderHeight = 45;
-		int invader2Points = 20;
-		
-		Invader invader2 = new Invader(new Point(invaderX,invaderY), new Rectangle(invaderWidth, invaderHeight), invader2Points, invaderImg2.getImage());
 		screenObjects.add(invader2);
-		}
-		
-		//add the fourth row of invaders
-		int startAdding4 = screenWidth/5;
-		int endAdding4 = startAdding*4;
-		
-		for (int addPoint = endAdding4; startAdding4 < endAdding4; endAdding4 = endAdding4 - 50)
-		{
-		int	invaderX = endAdding4;
-		int	invaderY = 350;
-			
-		int invaderWidth = 45;
-		int invaderHeight = 45;
-		int invader2Points = 20;
-		
-		Invader invader2 = new Invader(new Point(invaderX,invaderY), new Rectangle(invaderWidth, invaderHeight), invader2Points, invaderImg2.getImage());
-		screenObjects.add(invader2);
-		}
-		
-		//add the last row of invaders
-		
-		int startAdding5 = screenWidth/5;
-		int endAdding5 = startAdding*4;
-		
-		for (int addPoint = endAdding5; startAdding5 < endAdding5; endAdding5 = endAdding5 - 50)
-		{
-		int	invaderX = endAdding5;
-		int	invaderY = 300;
-			
-		int invaderWidth = 45;
-		int invaderHeight = 45;
-		int invader2Points = 40;
-		
-		Invader invader3 = new Invader(new Point(invaderX,invaderY), new Rectangle(invaderWidth, invaderHeight), invader3Points, invaderImg3.getImage());
 		screenObjects.add(invader3);
+		screenObjects.add(invader4);
+		screenObjects.add(invader5);
 		}
-		
 	}
 		
 	
