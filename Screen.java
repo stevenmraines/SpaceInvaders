@@ -20,6 +20,7 @@ import javax.swing.Timer;
  */
 public class Screen extends JPanel
 {
+	//Prepare the array, the screen, and the images for all moving objects
 	public static int screenWidth = 800;
 	public static int screenHeight = 1000;
 	private ArrayList<ScreenObject> screenObjects;
@@ -30,17 +31,30 @@ public class Screen extends JPanel
 	public static ImageIcon laserCannonImg = new ImageIcon("laserCannon.png");
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
 	public static ImageIcon bunkerImg = new ImageIcon("bunker.png");
+	public static ImageIcon mysteryImg = new ImageIcon("mysteryShip.png");
 	
+	//initialize invader specifics
 	public static int invaderWidth = 45;
 	public static int invaderHeight = 45;
 	public static int invader1Points = 10;
 	public static int invader2Points = 20;
 	public static int invader3Points = 40;
-	public static ObjectVector invaderVector = new ObjectVector(1,0);
+	public static ObjectVector invaderVector = Invader.getInvaderVector();
 	public static int invaderY = Invader.getBaseY();
-	public int startAdding = screenWidth / 5;
+	public int startAdding = screenWidth/5;
 	public int endAdding = startAdding*4;
 	
+	//initialize mysteryShip specifics
+	public static int mysteryY = 100;
+	public static int mysteryX = screenWidth;
+	public static int mysteryWidth = 80;
+	public static int mysteryHeight = 60;
+	public static long endTime;
+	public static long checkTime;
+	public static int mysterySpawn = 200;
+	public static int mysteryPoints = 50;
+	
+	//initialize lives
 	private int lives = 3;
 	
 	private boolean displayPlayNextLife = false;
@@ -52,11 +66,10 @@ public class Screen extends JPanel
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
 		setBackground(Color.black);
 		screenObjects = new ArrayList<ScreenObject>();
-		Random generator = new Random();
 		
 		addMovingObjects();
 		
-		timer = new javax.swing.Timer(30, new TimerListener());
+		timer = new javax.swing.Timer(25, new TimerListener());
 		timer.start();
 	}
 	
@@ -110,10 +123,7 @@ public class Screen extends JPanel
 		screenObjects.add(bunker2);
 		screenObjects.add(bunker3);
 		screenObjects.add(bunker4);
-		
-		//add the invaders
-		
-		
+				
 		//add the invaders
 		
 		for (int addPoint = endAdding; startAdding < endAdding; endAdding = endAdding - 50)
@@ -143,9 +153,6 @@ public class Screen extends JPanel
 		}
 	}
 		
-	
-	
-// !!!STEVEN'S AREA!!!
 	private class TimerListener implements ActionListener 
 	{
 		@Override
@@ -159,6 +166,15 @@ public class Screen extends JPanel
 					movingObj.move();
 				}
 			}
+			
+			//randomly generate a mystery ship
+			checkTime = new java.util.Date().getTime();
+			MysteryShip mysteryShip = new MysteryShip(new Point(mysteryX, mysteryY), new Rectangle(mysteryWidth, mysteryHeight), mysteryPoints, mysteryImg.getImage());
+			mysteryShip.setArbitraryVector(new ObjectVector(-5,0));
+			if (checkTime%mysterySpawn == 0){
+				screenObjects.add(mysteryShip);
+			}
+		
 			repaint();
 		}
 	}
