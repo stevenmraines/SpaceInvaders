@@ -12,12 +12,17 @@ import java.util.Random;
 public class MysteryShip extends Enemy {
 	
 	//TODO: Figure out how to generate random values in increments of 50.
-	protected int randomValue = 1;
+	protected int randomValue = 50;
 	
 	
 	public MysteryShip(Point p, Rectangle s, int points, Image i){
 		super(p, s, points, i);
 		randomValue = points;
+	}
+	public void move() 
+	{
+		location.x += arbitraryVector.getChangeX();
+		location.y += arbitraryVector.getChangeY();
 	}
 
 
