@@ -1,8 +1,11 @@
 SpaceInvaders
 =============
 
-Guys,
+Pending Issues/Bugs:
 
-I've finished adding the bunkers and invaders to the screen. Check it out. I've made the invaders oscillate, but there's an interesting bug where a couple of the invaders seem to move. Also, I can figure out how to make them move down... yet...
+1. Some of the invaders move 1 pixel to the right upon oscillating.
+2. Invaders will not move down upon oscillating.
+3. I cannot get shots to spawn using the KeyListener.
+
 
  - Derick.
