@@ -12,7 +12,6 @@ import java.awt.geom.Rectangle2D;
  *
  */
 
-//There are multiple types of projectiles to be accounted for
 public class Projectile extends MovingScreenObject {
 	
 	public Projectile(Point location, Rectangle size, Image i, double angle){
@@ -28,15 +27,18 @@ public class Projectile extends MovingScreenObject {
 		double changeY = (newEndY - location.y);
 		arbitraryVector = new ObjectVector(changeX, changeY);
 	}
-	public void draw(Graphics g){
-		Graphics2D g2 = (Graphics2D) g;
-		AffineTransform old = g2.getTransform();
-		g2.setColor(Color.white);
-		Rectangle2D.Double ray = new Rectangle2D.Double(location.x, location.y, size.getWidth(), size.getHeight());
-		AffineTransform at = g2.getTransform();
-		at.rotate(Math.toRadians(angle), location.x, location.y);
-		g2.setTransform(at);
-		g2.fill(ray);
-		g2.setTransform(old);
-	}
+	
+	// Do we need this since the ships is always pointed the same way?
+	
+	//public void draw(Graphics g){
+	//	Graphics2D g2 = (Graphics2D) g;
+	//	AffineTransform old = g2.getTransform();
+	//	g2.setColor(Color.white);
+	//	Rectangle2D.Double ray = new Rectangle2D.Double(location.x, location.y, size.getWidth(), size.getHeight());
+	//	AffineTransform at = g2.getTransform();
+	//	at.rotate(Math.toRadians(angle), location.x, location.y);
+	//	g2.setTransform(at);
+	//	g2.fill(ray);
+	//	g2.setTransform(old);
+	//}
 }
