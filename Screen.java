@@ -14,11 +14,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+
 /**
  * @author Derick Owens
  *
  */
-public class Screen extends JPanel
+public class Screen extends JPanel implements KeyListener
 {
 	//Prepare the array, the screen, and the images for all moving objects
 	public static int screenWidth = 800;
@@ -32,6 +33,7 @@ public class Screen extends JPanel
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
 	public static ImageIcon bunkerImg = new ImageIcon("bunker.png");
 	public static ImageIcon mysteryImg = new ImageIcon("mysteryShip.png");
+	public static ImageIcon shotImg = new ImageIcon("shot.png");
 	
 	//initialize invader specifics
 	public static int invaderWidth = 45;
@@ -51,24 +53,26 @@ public class Screen extends JPanel
 	public static int mysteryHeight = 60;
 	public static long endTime;
 	public static long checkTime;
-	public static int mysterySpawn = 200;
+	public static int mysterySpawn = 550;
 	public static int mysteryPoints = 50;
 	
 	//initialize lives
 	private int lives = 3;
 	
+	//initialize boolean values
 	private boolean displayPlayNextLife = false;
 	private boolean displayGameOver = false;
 	private boolean displayNewLevel = false;
+	
+	//initialize shot vector
+	public static ObjectVector projectileVector = new ObjectVector(0, -7);
 	
 	public Screen()
 	{
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
 		setBackground(Color.black);
 		screenObjects = new ArrayList<ScreenObject>();
-		
 		addMovingObjects();
-		
 		timer = new javax.swing.Timer(25, new TimerListener());
 		timer.start();
 	}
@@ -77,7 +81,6 @@ public class Screen extends JPanel
 	{
 		screenWidth = this.getWidth();
 		screenHeight = this.getHeight();
-		
 		super.paintComponent(g);
 		for (ScreenObject obj : screenObjects) 
 		{
@@ -97,19 +100,17 @@ public class Screen extends JPanel
 		
 		//add the laser cannon
 		
-		int x = screenWidth / 2;
+		int x = (screenWidth / 2) - 30;
 		int y = 850;
-		
 		Ship laserCannon = new Ship(new Point(x, y), new Rectangle(60,40), laserCannonImg.getImage());
 		laserCannon.setArbitraryVector(new ObjectVector(0,0));
 		laserCannon.setAngle(90);
-		screenObjects.add(laserCannon);
+		screenObjects.add(0,laserCannon);
 		
 		//add the bunkers
 		
-		int bunkerX = screenWidth / 5;
+		int bunkerX = (screenWidth / 5) - 15;
 		int bunkerY = 750;
-		
 		Bunker bunker1 = new Bunker(new Point(bunkerX,bunkerY), new Rectangle(80, 60), bunkerImg.getImage());
 		Bunker bunker2 = new Bunker(new Point(bunkerX*2,bunkerY), new Rectangle(80, 60), bunkerImg.getImage());
 		Bunker bunker3 = new Bunker(new Point(bunkerX*3,bunkerY), new Rectangle(80, 60), bunkerImg.getImage());
@@ -123,12 +124,12 @@ public class Screen extends JPanel
 		screenObjects.add(bunker2);
 		screenObjects.add(bunker3);
 		screenObjects.add(bunker4);
+
 				
 		//add the invaders
 		
 		for (int addPoint = endAdding; startAdding < endAdding; endAdding = endAdding - 50)
 		{
-			
 		int	invaderX = endAdding;
 		int	invaderY1 = invaderY;
 		int invaderY2 = invaderY - 50;
@@ -168,14 +169,50 @@ public class Screen extends JPanel
 			}
 			
 			//randomly generate a mystery ship
+			
 			checkTime = new java.util.Date().getTime();
 			MysteryShip mysteryShip = new MysteryShip(new Point(mysteryX, mysteryY), new Rectangle(mysteryWidth, mysteryHeight), mysteryPoints, mysteryImg.getImage());
-			mysteryShip.setArbitraryVector(new ObjectVector(-5,0));
+			mysteryShip.setArbitraryVector(new ObjectVector(-3,0));
 			if (checkTime%mysterySpawn == 0){
 				screenObjects.add(mysteryShip);
 			}
 		
 			repaint();
 		}
+	}
+	
+	public void keyPressed(KeyEvent event){
+		int keyCode = event.getKeyCode();
+		Ship playerShip = null;
+		if (screenObjects.get(0) instanceof Ship) {
+			playerShip = (Ship) screenObjects.get(0);
+		}
+		switch (keyCode){
+		
+		case KeyEvent.VK_SPACE:
+			if (playerShip != null) {
+				Point p = playerShip.getLocation();
+				double a = playerShip.getAngle();
+				Rectangle r = playerShip.getSize();
+				Projectile shot = new Projectile(new Point (p.x + r.width/2, 850), new Rectangle(7,30), shotImg.getImage(), a);
+				shot.setArbitraryVector(projectileVector);
+				screenObjects.add(shot);
+			}
+			break;
+		}
+		repaint();
+	}
+
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
