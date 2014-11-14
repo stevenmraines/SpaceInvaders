@@ -76,6 +76,15 @@ public class Screen extends JPanel implements KeyListener
 		setBackground(Color.black);
 		screenObjects = new ArrayList<ScreenObject>();
 		addMovingObjects();
+		
+		// Was having a weird problem where the KeyPressed
+		// method was never getting called, this fixes it
+		this.setFocusable(true);
+		this.requestFocus();
+		
+		// Add the key listener to control the laser cannon
+		this.addKeyListener(this);
+		
 		timer = new javax.swing.Timer(25, new TimerListener());
 		timer.start();
 	}
@@ -202,33 +211,55 @@ public class Screen extends JPanel implements KeyListener
 		}
 	}
 	
+	@Override
 	public void keyPressed(KeyEvent event){
 		int keyCode = event.getKeyCode();
 		Ship playerShip = null;
 		if (screenObjects.get(0) instanceof Ship) {
 			playerShip = (Ship) screenObjects.get(0);
 		}
-		switch (keyCode){
+		switch (keyCode) {
 		
-		case KeyEvent.VK_SPACE:
-			if (playerShip != null) {
-				Point p = playerShip.getLocation();
-				double a = playerShip.getAngle();
-				Rectangle r = playerShip.getSize();
-				Projectile shot = new Projectile(new Point (p.x + r.width/2, shipHeight), new Rectangle(7,30), shotImg.getImage(), a);
-				shot.setArbitraryVector(projectileVector);
-				screenObjects.add(shot);
-			}
-			break;
+			case KeyEvent.VK_SPACE:
+				if (playerShip != null) {
+					Point p = playerShip.getLocation();
+					double a = playerShip.getAngle();
+					Rectangle r = playerShip.getSize();
+					Projectile shot = new Projectile(new Point (p.x + r.width/2, 850), new Rectangle(7,30), shotImg.getImage(), a);
+					shot.setArbitraryVector(projectileVector);
+					screenObjects.add(shot);
+				}
+				break;
+			
+			case KeyEvent.VK_LEFT:
+				playerShip.setArbitraryVector(new ObjectVector(-2, 0));
+				playerShip.move();
+				break;
+				
+			case KeyEvent.VK_RIGHT:
+				playerShip.setArbitraryVector(new ObjectVector(2, 0));
+				playerShip.move();
+				break;
 		}
+		
 		repaint();
 	}
 
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+	public void keyReleased(KeyEvent e) {
 		
+		// Store the key that is pressed
+		int key = e.getKeyCode();
+		
+		// Reset the vector to 0, 0
+		if(screenObjects.get(0) instanceof Ship) {
+			if(key == e.VK_LEFT || key == e.VK_RIGHT) {
+				Ship playerShip = (Ship) screenObjects.get(0);
+				playerShip.setArbitraryVector(new ObjectVector(0, 0));
+				playerShip.move();
+			}
+		}
 	}
 
 	@Override
