@@ -23,7 +23,7 @@ public class Screen extends JPanel implements KeyListener
 {
 	//Prepare the array, the screen, and the images for all moving objects
 	public static int screenWidth = 800;
-	public static int screenHeight = 1000;
+	public static int screenHeight = 700;
 	private ArrayList<ScreenObject> screenObjects;
 	private javax.swing.Timer timer;
 	public static ImageIcon invaderImg1 = new ImageIcon("invader3.jpg");
@@ -47,13 +47,12 @@ public class Screen extends JPanel implements KeyListener
 	public int endAdding = startAdding*4;
 	
 	//initialize mysteryShip specifics
-	public static int mysteryY = 100;
+	public static int mysteryY = screenHeight/10;
 	public static int mysteryX = screenWidth;
 	public static int mysteryWidth = 80;
 	public static int mysteryHeight = 60;
 	public static long endTime;
 	public static long checkTime;
-	public static int mysterySpawn = 550;
 	public static int mysteryPoints = 50;
 	
 	//initialize lives
@@ -66,6 +65,10 @@ public class Screen extends JPanel implements KeyListener
 	
 	//initialize shot vector
 	public static ObjectVector projectileVector = new ObjectVector(0, -7);
+	
+	//set a static variable for height that works for all resolutions
+	int bunkerHeight;
+	int shipHeight;
 	
 	public Screen()
 	{
@@ -100,8 +103,10 @@ public class Screen extends JPanel implements KeyListener
 		
 		//add the laser cannon
 		
+		Rectangle shipDimensions = new Rectangle(60,40);
+		shipHeight = (int) (screenHeight - shipDimensions.getHeight()*2.5);
 		int x = (screenWidth / 2) - 30;
-		int y = 850;
+		int y = shipHeight;
 		Ship laserCannon = new Ship(new Point(x, y), new Rectangle(60,40), laserCannonImg.getImage());
 		laserCannon.setArbitraryVector(new ObjectVector(0,0));
 		laserCannon.setAngle(90);
@@ -109,8 +114,10 @@ public class Screen extends JPanel implements KeyListener
 		
 		//add the bunkers
 		
+		Rectangle bunkerDimensions = new Rectangle(80,60);
+		bunkerHeight = (int) (screenHeight - bunkerDimensions.getHeight()*3);
 		int bunkerX = (screenWidth / 5) - 15;
-		int bunkerY = 750;
+		int bunkerY = bunkerHeight;
 		Bunker bunker1 = new Bunker(new Point(bunkerX,bunkerY), new Rectangle(80, 60), bunkerImg.getImage());
 		Bunker bunker2 = new Bunker(new Point(bunkerX*2,bunkerY), new Rectangle(80, 60), bunkerImg.getImage());
 		Bunker bunker3 = new Bunker(new Point(bunkerX*3,bunkerY), new Rectangle(80, 60), bunkerImg.getImage());
@@ -159,6 +166,20 @@ public class Screen extends JPanel implements KeyListener
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
+			
+			for (ScreenObject obj: screenObjects) {
+				if (obj instanceof Invader) {
+					if (obj.getLocation().getX() == 100) {
+						Invader.invaderVector.setChangeX(1);
+						Invader.invaderVector.setChangeY(5);
+					}
+					else if (obj.getLocation().getX() == 
+							Screen.screenWidth - 100) {
+						Invader.invaderVector.setChangeX(-1);
+						Invader.invaderVector.setChangeY(5);
+					}
+				}
+			}
 			for (ScreenObject obj: screenObjects)
 			{
 				if (obj instanceof MovingScreenObject)
@@ -167,13 +188,13 @@ public class Screen extends JPanel implements KeyListener
 					movingObj.move();
 				}
 			}
+			Invader.invaderVector.setChangeY(0);
 			
 			//randomly generate a mystery ship
-			
 			checkTime = new java.util.Date().getTime();
 			MysteryShip mysteryShip = new MysteryShip(new Point(mysteryX, mysteryY), new Rectangle(mysteryWidth, mysteryHeight), mysteryPoints, mysteryImg.getImage());
-			mysteryShip.setArbitraryVector(new ObjectVector(-3,0));
-			if (checkTime%mysterySpawn == 0){
+			mysteryShip.setArbitraryVector(new ObjectVector(-5,0));
+			if (Math.random() < 0.001){
 				screenObjects.add(mysteryShip);
 			}
 		
