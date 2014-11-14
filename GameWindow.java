@@ -13,6 +13,7 @@ public class GameWindow extends JFrame {
 		setTitle("Space Invaders");
 		Screen screen = new Screen();
 		add(screen);
+		//disable resizing
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
