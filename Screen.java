@@ -215,7 +215,7 @@ public class Screen extends JPanel implements KeyListener
 				Point p = playerShip.getLocation();
 				double a = playerShip.getAngle();
 				Rectangle r = playerShip.getSize();
-				Projectile shot = new Projectile(new Point (p.x + r.width/2, 850), new Rectangle(7,30), shotImg.getImage(), a);
+				Projectile shot = new Projectile(new Point (p.x + r.width/2, shipHeight), new Rectangle(7,30), shotImg.getImage(), a);
 				shot.setArbitraryVector(projectileVector);
 				screenObjects.add(shot);
 			}
@@ -237,3 +237,4 @@ public class Screen extends JPanel implements KeyListener
 		
 	}
 }
+
