@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 
 
 public class Invader extends Enemy {
-	public static int baseY = 500;
+	public static int baseY = 325;
 	public static ObjectVector invaderVector = new ObjectVector(1,0);
 	public Invader(Point p, Rectangle s, int points, Image i){
 		super(p, s, points, i);
@@ -13,21 +13,6 @@ public class Invader extends Enemy {
 	{
 		location.x += invaderVector.getChangeX();
 		location.y += invaderVector.getChangeY();
-		
-		if (location.x == Screen.screenWidth-100) {
-			invaderVector.setChangeX(-1); 
-			//why won't these work?
-			
-			//setBaseY(baseY + 5);
-			//location.y = location.y + 5;
-		}
-		if (location.x == 100) {
-			invaderVector.setChangeX(1);
-			//why won't these work?
-			
-			//setBaseY(baseY + 5);
-			//location.y = location.y + 5;
-		}
 	}
 	/**
 	 * @return the baseY
