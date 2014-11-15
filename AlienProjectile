@@ -1,0 +1,37 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+/**
+ * 
+ * @author Derick Owens
+ *
+ */
+
+public class AlienProjectile extends MovingScreenObject {
+	
+	public AlienProjectile(Point location, Rectangle size, Image i, double angle){
+		super(location, size, i, angle);
+		
+		double endX = location.x;
+		double endY = location.y;
+		
+		double newEndX = location.x + (endX - location.x)*Math.cos(Math.toRadians(angle));
+		double newEndY = location.y + (endY - location.y)*Math.sin(Math.toRadians(angle));
+		
+		double changeX = (newEndX - location.x);
+		double changeY = (newEndY - location.y);
+		arbitraryVector = new ObjectVector(changeX, changeY);
+	}
+	
+	public void move() 
+		{
+			location.x += arbitraryVector.getChangeX();
+			location.y += arbitraryVector.getChangeY();
+		}
+		
+}
