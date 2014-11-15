@@ -34,7 +34,8 @@ public class Screen extends JPanel implements KeyListener
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
 	public static ImageIcon bunkerImg = new ImageIcon("bunker.png");
 	public static ImageIcon mysteryImg = new ImageIcon("mysteryShip.png");
-	public static ImageIcon shotImg = new ImageIcon("shot.png");
+	public static ImageIcon shipShotImg = new ImageIcon("shipShot.png");
+	public static ImageIcon alienShotImg = new ImageIcon("alienShot.png");
 	
 	//initialize invader specifics
 	public static int invaderWidth = 45;
@@ -46,6 +47,7 @@ public class Screen extends JPanel implements KeyListener
 	public static int invaderY = Invader.getBaseY();
 	public int startAdding = screenWidth/5;
 	public int endAdding = startAdding*4;
+	static Invader invader5;
 	
 	//initialize mysteryShip specifics
 	public static int mysteryY = screenHeight/10;
@@ -64,8 +66,10 @@ public class Screen extends JPanel implements KeyListener
 	private boolean displayGameOver = false;
 	private boolean displayNewLevel = false;
 	
-	//initialize shot vector
-	public static ObjectVector projectileVector = new ObjectVector(0, -7);
+	//initialize shot vector and details
+	public static ObjectVector projectileVector = new ObjectVector(0, -8);
+	int fireFromX;
+	int fireFromY;
 	
 	//set a static variable for height that works for all resolutions
 	int bunkerHeight;
@@ -179,6 +183,8 @@ public class Screen extends JPanel implements KeyListener
 			
 			for (ScreenObject obj: screenObjects) {
 				if (obj instanceof Invader) {
+
+					
 					if (obj.getLocation().getX() == 100) {
 						Invader.invaderVector.setChangeX(1);
 						Invader.invaderVector.setChangeY(5);
@@ -201,11 +207,30 @@ public class Screen extends JPanel implements KeyListener
 			Invader.invaderVector.setChangeY(0);
 			
 			//randomly generate a mystery ship
+			
 			checkTime = new java.util.Date().getTime();
 			MysteryShip mysteryShip = new MysteryShip(new Point(mysteryX, mysteryY), new Rectangle(mysteryWidth, mysteryHeight), mysteryPoints, mysteryImg.getImage());
-			mysteryShip.setArbitraryVector(new ObjectVector(-5,0));
+			mysteryShip.setArbitraryVector(new ObjectVector(-4,0));
+			
 			if (Math.random() < 0.001){
 				screenObjects.add(mysteryShip);
+				
+			}
+			
+			//randomly generate an alien shot
+			
+			for (ScreenObject obj: screenObjects) {
+				if (obj instanceof Invader) {
+					if (Math.random() < .0005){
+					timer.stop();
+					fireFromX = (int) obj.getLocation().getX();
+					fireFromY = (int) obj.getLocation().getY();
+					AlienProjectile alienShot = new AlienProjectile(new Point(fireFromX, fireFromY), new Rectangle(7, 30), alienShotImg.getImage(), 180);
+					alienShot.setArbitraryVector(new ObjectVector(0,7));
+					screenObjects.add(alienShot);
+					timer.start();
+					}
+				}
 			}
 		
 			repaint();
@@ -226,7 +251,7 @@ public class Screen extends JPanel implements KeyListener
 					Point p = playerShip.getLocation();
 					double a = playerShip.getAngle();
 					Rectangle r = playerShip.getSize();
-					Projectile shot = new Projectile(new Point (p.x + r.width/2, shipHeight-12), new Rectangle(7,30), shotImg.getImage(), a);
+					ShipProjectile shot = new ShipProjectile(new Point (p.x + r.width/2, shipHeight-12), new Rectangle(7,30), shipShotImg.getImage(), a);
 					shot.setArbitraryVector(projectileVector);
 					screenObjects.add(shot);
 				}
@@ -269,4 +294,3 @@ public class Screen extends JPanel implements KeyListener
 		
 	}
 }
-
