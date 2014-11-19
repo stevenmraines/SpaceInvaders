@@ -1,6 +1,7 @@
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -11,13 +12,14 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Iterator;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 
 /**
- * @author Derick Owens
+ * @author Derick Owens and J halstead
  *
  */
 public class Screen extends JPanel implements KeyListener
@@ -27,10 +29,10 @@ public class Screen extends JPanel implements KeyListener
 	public static int screenHeight = 700;
 	private ArrayList<ScreenObject> screenObjects;
 	private javax.swing.Timer timer;
-	public static ImageIcon invaderImg1 = new ImageIcon("invader3.jpg");
-	public static ImageIcon invaderImg2 = new ImageIcon("invader1.gif");
-	public static ImageIcon invaderImg3 = new ImageIcon("invader2.jpg");
-	public static ImageIcon laserCannonImg = new ImageIcon("laserCannon.png");
+	public static ImageIcon invaderImg1 = new ImageIcon("invader3.png");
+	public static ImageIcon invaderImg2 = new ImageIcon("invader1.png");
+	public static ImageIcon invaderImg3 = new ImageIcon("invader2.png");
+	public static ImageIcon laserCannonImg = new ImageIcon("laserCanon.png");
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
 	public static ImageIcon bunkerImg = new ImageIcon("bunker.png");
 	public static ImageIcon mysteryImg = new ImageIcon("mysteryShip.png");
@@ -58,6 +60,9 @@ public class Screen extends JPanel implements KeyListener
 	public static long checkTime;
 	public static int mysteryPoints = 50;
 	
+	public Score theScore;
+	public Level currentLevel;
+	
 	//initialize lives
 	private int lives = 3;
 	
@@ -82,6 +87,19 @@ public class Screen extends JPanel implements KeyListener
 		screenObjects = new ArrayList<ScreenObject>();
 		addMovingObjects();
 		
+	    Score theScore = new Score(new Point(screenWidth/2 - 400, 30), new Rectangle(0,0));
+		screenObjects.add(theScore);
+		
+	    Lives playerLives = new Lives(new Point(screenWidth/2 -100, 30), new Rectangle(0,0));
+		screenObjects.add(playerLives);
+		Level playerlevel = new Level (new Point(screenWidth/2 -50, 30), new Rectangle(0,0));
+		
+		this.addKeyListener(this);
+		timer = new javax.swing.Timer(30,new TimerListener());
+		timer.start();
+		      
+		
+		
 		// Was having a weird problem where the KeyPressed
 		// method was never getting called, this fixes it
 		this.setFocusable(true);
@@ -98,13 +116,40 @@ public class Screen extends JPanel implements KeyListener
 	{
 		screenWidth = this.getWidth();
 		screenHeight = this.getHeight();
+		
 		super.paintComponent(g);
 		for (ScreenObject obj : screenObjects) 
 		{
 			obj.draw(g);
 		}
+		
+	
+	
+	
+	if (this.displayPlayNextLife){
+	   g.setColor(Color.white);
+	   g.setFont(new Font ("Serif", Font.BOLD, 36));
+	   g.drawString("You have " + lives + "Cannons left ", 150,(int)(0.4*screenHeight));
+	   g.drawString("Press enter to  Continue", 135, (int)(0.6*screenHeight));
 	}
-
+	if (this.displayGameOver){
+	   g.setColor(Color.white);
+	   g.setFont(new Font("Serif", Font.BOLD, 36));
+	   g.drawString("Game Over", 205, (int)(0.4*screenHeight));
+	   
+	   g.drawString("Would you like to play again? (Y/N)", 30, (int)(0.6*screenHeight));
+	   	   
+	}
+	   
+	 if (this.displayNewLevel) {
+	    g.setColor(Color.white);
+	    g.setFont(new Font ("Serif", Font.BOLD, 36));
+	    g.drawString("you have won "+ ((Object) currentLevel.getlevelNumber()), 190, (int)(0.6*screenHeight));
+	       
+	    g.drawString("Press enter to  Continue", 135, (int)(0.6*screenHeight));
+	       
+	 }
+	}
 	public void addMovingObjects()
 	{
 		Iterator<ScreenObject> it = screenObjects.iterator();
@@ -291,6 +336,9 @@ public class Screen extends JPanel implements KeyListener
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
+		
+	}
+}
 		
 	}
 }
