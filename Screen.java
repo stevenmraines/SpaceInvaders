@@ -32,7 +32,7 @@ public class Screen extends JPanel implements KeyListener
 	public static ImageIcon invaderImg1 = new ImageIcon("invader3.png");
 	public static ImageIcon invaderImg2 = new ImageIcon("invader1.png");
 	public static ImageIcon invaderImg3 = new ImageIcon("invader2.png");
-	public static ImageIcon laserCannonImg = new ImageIcon("laserCanon.png");
+	public static ImageIcon laserCannonImg = new ImageIcon("laserCannon.png");
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
 	public static ImageIcon bunkerImg = new ImageIcon("bunker.png");
 	public static ImageIcon mysteryImg = new ImageIcon("mysteryShip.png");
