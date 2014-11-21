@@ -23,6 +23,9 @@ import javax.swing.Timer;
  */
 public class Screen extends JPanel implements KeyListener
 {
+	//initialize level
+	static int level = 0;
+	
 	//Prepare the array, the screen, and the images for all moving objects
 	public static int screenWidth = 800;
 	public static int screenHeight = 700;
@@ -44,7 +47,7 @@ public class Screen extends JPanel implements KeyListener
 	public static int invader1Points = 10;
 	public static int invader2Points = 20;
 	public static int invader3Points = 40;
-	public static ObjectVector invaderVector = Invader.getInvaderVector();
+	public static ObjectVector invaderVector = new ObjectVector(1+(level/2),0);
 	public static int invaderY = Invader.getBaseY();
 	public int startAdding = screenWidth/5;
 	public int endAdding = startAdding*4;
@@ -54,11 +57,10 @@ public class Screen extends JPanel implements KeyListener
 	public static int mysteryX = screenWidth;
 	public static int mysteryWidth = 80;
 	public static int mysteryHeight = 50;
-
 	public static int mysteryPoints = 50;
 	
+	//initialize score
 	public Score theScore;
-	//public Level currentLevel;
 	
 	//initialize lives
 	private int lives = 3;
@@ -214,12 +216,12 @@ public class Screen extends JPanel implements KeyListener
 			for (ScreenObject obj: screenObjects) {
 				if (obj instanceof Invader) {
 					if (obj.getLocation().getX() == 100) {
-						Invader.invaderVector.setChangeX(1);
+						Invader.invaderVector.setChangeX(1 + (level/4));
 						Invader.invaderVector.setChangeY(5);
 					}
 					else if (obj.getLocation().getX() == 
 							Screen.screenWidth - 100) {
-						Invader.invaderVector.setChangeX(-1);
+						Invader.invaderVector.setChangeX(-1 - (level/4));
 						Invader.invaderVector.setChangeY(5);
 					}
 				}
@@ -237,9 +239,9 @@ public class Screen extends JPanel implements KeyListener
 			
 			//randomly generate a mystery ship
 			MysteryShip mysteryShip = new MysteryShip(new Point(mysteryX, mysteryY), new Rectangle(mysteryWidth, mysteryHeight), mysteryPoints, mysteryImg.getImage());
-			mysteryShip.setArbitraryVector(new ObjectVector(-4,0));
+			mysteryShip.setArbitraryVector(new ObjectVector(-4-(level/4),0));
 			
-			if (Math.random() < 0.001){
+			if (Math.random() < 0.001+(.001*level/2)){
 				screenObjects.add(mysteryShip);
 				
 			}
@@ -248,7 +250,7 @@ public class Screen extends JPanel implements KeyListener
 			
 			for (ScreenObject obj: screenObjects) {
 				if (obj instanceof Invader) {
-					if (Math.random() < .0005){
+					if (Math.random() < .0005 + (.0005*level/2)){
 					timer.stop();
 					fireFromX = (int) obj.getLocation().getX();
 					fireFromY = (int) obj.getLocation().getY();
@@ -318,7 +320,5 @@ public class Screen extends JPanel implements KeyListener
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
-	
-
-		
+	}
+}
