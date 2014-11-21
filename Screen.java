@@ -12,7 +12,6 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Iterator;
-
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -40,8 +39,8 @@ public class Screen extends JPanel implements KeyListener
 	public static ImageIcon alienShotImg = new ImageIcon("alienShot.png");
 	
 	//initialize invader specifics
-	public static int invaderWidth = 45;
-	public static int invaderHeight = 45;
+	public static int invaderWidth = 35;
+	public static int invaderHeight = 35;
 	public static int invader1Points = 10;
 	public static int invader2Points = 20;
 	public static int invader3Points = 40;
@@ -49,19 +48,17 @@ public class Screen extends JPanel implements KeyListener
 	public static int invaderY = Invader.getBaseY();
 	public int startAdding = screenWidth/5;
 	public int endAdding = startAdding*4;
-	static Invader invader5;
 	
 	//initialize mysteryShip specifics
 	public static int mysteryY = screenHeight/10;
 	public static int mysteryX = screenWidth;
 	public static int mysteryWidth = 80;
-	public static int mysteryHeight = 60;
-	public static long endTime;
-	public static long checkTime;
+	public static int mysteryHeight = 50;
+
 	public static int mysteryPoints = 50;
 	
 	public Score theScore;
-	public Level currentLevel;
+	//public Level currentLevel;
 	
 	//initialize lives
 	private int lives = 3;
@@ -92,13 +89,10 @@ public class Screen extends JPanel implements KeyListener
 		
 	    Lives playerLives = new Lives(new Point(screenWidth/2 -100, 30), new Rectangle(0,0));
 		screenObjects.add(playerLives);
-		Level playerlevel = new Level (new Point(screenWidth/2 -50, 30), new Rectangle(0,0));
+		//Level playerlevel = new Level (new Point(screenWidth/2 -50, 30), new Rectangle(0,0));
 		
-		this.addKeyListener(this);
-		timer = new javax.swing.Timer(30,new TimerListener());
+		timer = new javax.swing.Timer(25, new TimerListener());
 		timer.start();
-		      
-		
 		
 		// Was having a weird problem where the KeyPressed
 		// method was never getting called, this fixes it
@@ -107,45 +101,36 @@ public class Screen extends JPanel implements KeyListener
 		
 		// Add the key listener to control the laser cannon
 		this.addKeyListener(this);
-		
-		timer = new javax.swing.Timer(25, new TimerListener());
-		timer.start();
 	}
 	
 	public void paintComponent(Graphics g)
 	{
 		screenWidth = this.getWidth();
 		screenHeight = this.getHeight();
-		
 		super.paintComponent(g);
 		for (ScreenObject obj : screenObjects) 
 		{
 			obj.draw(g);
 		}
 		
-	
-	
-	
 	if (this.displayPlayNextLife){
 	   g.setColor(Color.white);
 	   g.setFont(new Font ("Serif", Font.BOLD, 36));
 	   g.drawString("You have " + lives + "Cannons left ", 150,(int)(0.4*screenHeight));
 	   g.drawString("Press enter to  Continue", 135, (int)(0.6*screenHeight));
 	}
+	
 	if (this.displayGameOver){
 	   g.setColor(Color.white);
 	   g.setFont(new Font("Serif", Font.BOLD, 36));
 	   g.drawString("Game Over", 205, (int)(0.4*screenHeight));
-	   
-	   g.drawString("Would you like to play again? (Y/N)", 30, (int)(0.6*screenHeight));
-	   	   
+	   g.drawString("Would you like to play again? (Y/N)", 30, (int)(0.6*screenHeight));   
 	}
 	   
 	 if (this.displayNewLevel) {
 	    g.setColor(Color.white);
 	    g.setFont(new Font ("Serif", Font.BOLD, 36));
-	    g.drawString("you have won "+ ((Object) currentLevel.getlevelNumber()), 190, (int)(0.6*screenHeight));
-	       
+	    //g.drawString("you have won "+ ((Object) currentLevel.getlevelNumber()), 190, (int)(0.6*screenHeight));
 	    g.drawString("Press enter to  Continue", 135, (int)(0.6*screenHeight));
 	       
 	 }
@@ -225,11 +210,9 @@ public class Screen extends JPanel implements KeyListener
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			
+			//make the invader oscillate
 			for (ScreenObject obj: screenObjects) {
 				if (obj instanceof Invader) {
-
-					
 					if (obj.getLocation().getX() == 100) {
 						Invader.invaderVector.setChangeX(1);
 						Invader.invaderVector.setChangeY(5);
@@ -241,6 +224,7 @@ public class Screen extends JPanel implements KeyListener
 					}
 				}
 			}
+			//make all screenObjects move
 			for (ScreenObject obj: screenObjects)
 			{
 				if (obj instanceof MovingScreenObject)
@@ -252,8 +236,6 @@ public class Screen extends JPanel implements KeyListener
 			Invader.invaderVector.setChangeY(0);
 			
 			//randomly generate a mystery ship
-			
-			checkTime = new java.util.Date().getTime();
 			MysteryShip mysteryShip = new MysteryShip(new Point(mysteryX, mysteryY), new Rectangle(mysteryWidth, mysteryHeight), mysteryPoints, mysteryImg.getImage());
 			mysteryShip.setArbitraryVector(new ObjectVector(-4,0));
 			
@@ -290,7 +272,7 @@ public class Screen extends JPanel implements KeyListener
 			playerShip = (Ship) screenObjects.get(0);
 		}
 		switch (keyCode) {
-		
+			//shoot if space bar is pressed
 			case KeyEvent.VK_SPACE:
 				if (playerShip != null) {
 					Point p = playerShip.getLocation();
@@ -337,8 +319,6 @@ public class Screen extends JPanel implements KeyListener
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
-	}
-}
+	
+
 		
-	}
-}
