@@ -23,8 +23,6 @@ import javax.swing.Timer;
  */
 public class Screen extends JPanel implements KeyListener
 {
-
-	
 	//Prepare the array, the screen, and the images for all moving objects
 	public static int screenWidth = 800;
 	public static int screenHeight = 700;
@@ -41,7 +39,7 @@ public class Screen extends JPanel implements KeyListener
 	public static ImageIcon alienShotImg = new ImageIcon("alienShot.png");
 	
 	//initialize level
-	static int currentLevel = 0;
+	static int currentLevel = 10;
 	static Level level = new Level(currentLevel, new Point(screenWidth-200, 30), new Rectangle(0,0));
 	static int levelDisplay = level.getLevelNumber() + 1;
 	
@@ -67,7 +65,7 @@ public class Screen extends JPanel implements KeyListener
 	public Score theScore;
 	
 	//initialize lives
-	private int lives = 3;
+	public static int lives = 3;
 	
 	//initialize boolean values
 	private boolean displayPlayNextLife = false;
@@ -340,4 +338,17 @@ public class Screen extends JPanel implements KeyListener
 	public static void setLevelDisplay(int currentLevel) {
 		Screen.levelDisplay = currentLevel;
 	}
-}
+
+	/**
+	 * @return the lives
+	 */
+	public static int getLives() {
+		return lives;
+	}
+
+	/**
+	 * @param lives the lives to set
+	 */
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
