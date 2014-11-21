@@ -39,6 +39,6 @@ public class Lives extends ScreenObject
 	   }
       g.setColor(Color.white);
       g.setFont(new Font("Press Start 2P",Font.BOLD, 24));
-      g.drawString("LIVES:" , location.x, location.y);
+      g.drawString("LIVES:" + Screen.getLives(), location.x, location.y);
    }
 }
