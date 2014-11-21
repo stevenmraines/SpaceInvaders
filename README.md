@@ -1,19 +1,11 @@
 SpaceInvaders
 =============
 
-Okay guys,
+UPDATE:
 
-I've completed all the MovingScreenObjects as I said I would. I'm done with my portion of the code, as we all agreed, and I'm now going to focus on another project I have due soon. If you guys have any questions, don't hesitate to ask, but I'm done with writing code. As you can see, the shots are fully operational. Here's a list of things you guys need to consider:
+I changed a few small things in the Screen class that were bugging me. They're just cosmetic. I think it looks a little better with these new dimensions.
 
-Score display, 
-Lives display, 
-Scores being totaled, 
-Levels, 
-Collisions, 
-Beginning screen ("Press Enter to Continue"), 
-Game Over - when it occurs and how it is displayed.
-
-I can't really think of anything else. Good luck, guys! I'll make myself available as much as I can.
+Also, I added the font we'll be using on the Wiki page. Just add the font to the source folder just like it's an image. Should be very easy. Any questions, feel free to ask. Also, the font we use is up for debate, but I think you guys will like the one I picked. :)
 
 Thanks,
 
