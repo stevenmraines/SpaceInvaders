@@ -215,11 +215,11 @@ public class Screen extends JPanel implements KeyListener
 			//make the invader oscillate
 			for (ScreenObject obj: screenObjects) {
 				if (obj instanceof Invader) {
-					if (obj.getLocation().getX() == 100) {
+					if (obj.getLocation().getX() <= 100) {
 						Invader.invaderVector.setChangeX(1 + (level/4));
 						Invader.invaderVector.setChangeY(5);
 					}
-					else if (obj.getLocation().getX() == 
+					else if (obj.getLocation().getX() >= 
 							Screen.screenWidth - 100) {
 						Invader.invaderVector.setChangeX(-1 - (level/4));
 						Invader.invaderVector.setChangeY(5);
