@@ -11,35 +11,27 @@ import java.util.Random;
 
 public class MysteryShip extends Enemy {
 	
-	//Generate a randomly selected mystery value between 50 and 250 
-	Random generator = new Random();
-	int i = generator.nextInt(5) + 1;
-	protected int mysteryValue = 50*i;
+	//TODO: Figure out how to generate random values in increments of 50.
+	protected int randomValue = 50;
 	
 	
 	public MysteryShip(Point p, Rectangle s, int points, Image i){
 		super(p, s, points, i);
-		mysteryValue = points;
+		randomValue = points;
 	}
-	
 	public void move() 
 	{
 		location.x += arbitraryVector.getChangeX();
 		location.y += arbitraryVector.getChangeY();
 	}
 
+
 	/**
 	 * @return the randomValue
 	 */
-	public int getMysteryValue() {
-		return mysteryValue;
-	}
-
-
-	/**
-	 * @param randomValue the randomValue to set
-	 */
-	public void setMysteryValue(int randomValue) {
-		this.mysteryValue = randomValue;
+	public int getRandomValue() {
+		Random randGenerator = new Random();
+		int randInt = 1 + randGenerator.nextInt(6);
+		return randomValue * randInt;
 	}
 }
