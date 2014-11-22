@@ -12,9 +12,8 @@ import java.util.Random;
 public class MysteryShip extends Enemy {
 	
 	//Generate a randomly selected mystery value between 50 and 250 
-	Random generator = new Random();
-	int i = generator.nextInt(5) + 1;
-	protected int mysteryValue = 50*i;
+
+	protected int mysteryValue;
 	
 	
 	public MysteryShip(Point p, Rectangle s, int points, Image i){
