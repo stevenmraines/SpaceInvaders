@@ -270,7 +270,7 @@ public class Screen extends JPanel implements KeyListener
 										
 									}
 									else {
-										JOptionPane.showMessageDialog(null, "You're dead!");
+										JOptionPane.showMessageDialog(null, "GAME OVER");
 										System.exit(0);
 									}
 								}
@@ -324,6 +324,7 @@ public class Screen extends JPanel implements KeyListener
 									// remove the shot that hit the bunker
 									screenObjects.remove(j);
 									
+									
 									// decrement hitPoints by 1
 									Bunker damagedBunker = (Bunker) movingObj;
 									damagedBunker.setHitPoints(damagedBunker.getHitPoints() - 1);
@@ -371,7 +372,7 @@ public class Screen extends JPanel implements KeyListener
 				}
 			}
 						
-			//make the invader oscillate
+			//make the invaders oscillate
 			for (ScreenObject obj: screenObjects) {
 				if (obj instanceof Invader) {
 					if (obj.getLocation().getX() <= 100) {
@@ -394,6 +395,14 @@ public class Screen extends JPanel implements KeyListener
 					movingObj.move();
 				}
 			}
+			
+			//delete any objects that fly off the screen (projectiles)
+			for(int i = 0; i < screenObjects.size(); i++) {
+				if (screenObjects.get(i).getLocation().getY() >= (screenHeight + invaderHeight) || (screenObjects.get(i).getLocation().getY()<= (0 - invaderHeight))){
+					screenObjects.remove(i);
+				}
+			}
+			
 			Invader.invaderVector.setChangeY(0);
 			
 			//randomly generate a mystery ship
