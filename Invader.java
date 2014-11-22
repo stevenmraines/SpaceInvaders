@@ -6,7 +6,7 @@ import java.awt.Rectangle;
 public class Invader extends Enemy {
 	public static int baseY = 325;
 	public static ObjectVector invaderVector = new ObjectVector(1,0);
-	public static int invaderPoints;
+	public int invaderPoints;
 	public Invader(Point p, Rectangle s, int points, Image i){
 		super(p, s, points, i);
 		invaderPoints = points;
@@ -43,13 +43,13 @@ public class Invader extends Enemy {
 	/**
 	 * @return the invaderPoints
 	 */
-	public static int getInvaderPoints() {
+	public int getInvaderPoints() {
 		return invaderPoints;
 	}
 	/**
 	 * @param invaderPoints the invaderPoints to set
 	 */
-	public static void setInvaderPoints(int invaderPoints) {
-		Invader.invaderPoints = invaderPoints;
+	public void setInvaderPoints(int iP) {
+		invaderPoints = iP;
 	}
 }
