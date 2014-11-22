@@ -12,7 +12,9 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Iterator;
+
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -33,13 +35,13 @@ public class Screen extends JPanel implements KeyListener
 	public static ImageIcon invaderImg3 = new ImageIcon("invader2.png");
 	public static ImageIcon laserCannonImg = new ImageIcon("laserCannon.png");
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
-	public static ImageIcon bunkerImg = new ImageIcon("bunker.png");
+	public static ImageIcon bunkerImg = new ImageIcon("bunker40.png");
 	public static ImageIcon mysteryImg = new ImageIcon("mysteryShip.png");
 	public static ImageIcon shipShotImg = new ImageIcon("shipShot.png");
 	public static ImageIcon alienShotImg = new ImageIcon("alienShot.png");
 	
 	//initialize level
-	static int currentLevel = 10;
+	static int currentLevel = 0;
 	static Level level = new Level(currentLevel, new Point(screenWidth-200, 30), new Rectangle(0,0));
 	static int levelDisplay = level.getLevelNumber() + 1;
 	
@@ -62,7 +64,7 @@ public class Screen extends JPanel implements KeyListener
 	public static int mysteryPoints = 50;
 	
 	//initialize score
-	public Score theScore;
+	public Score theScore; 
 	
 	//initialize lives
 	public static int lives = 3;
@@ -214,7 +216,157 @@ public class Screen extends JPanel implements KeyListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e)
-		{
+		{		
+			// Check for collisions
+			for(int i = 0; i < screenObjects.size(); i++) {
+				
+				// Check if the item being checked for collisions is a MovingScreenObject
+				// If it isn't, skip right over it
+				if(!(screenObjects.get(i) instanceof MovingScreenObject)) {
+					continue;
+				}
+				else {
+					ScreenObject obj = screenObjects.get(i);
+					MovingScreenObject movingObj = (MovingScreenObject) obj;
+					
+					for(int j = i + 1; j < screenObjects.size(); j++) {
+						
+						// Check whether MovingScreenObject again
+						if(!(screenObjects.get(j) instanceof MovingScreenObject)) {
+							continue;
+						}
+						else {
+							ScreenObject otherObj = screenObjects.get(j);
+							MovingScreenObject otherMovingObj = (MovingScreenObject) otherObj;
+							
+							// Make sure they're not the same object
+							if(movingObj == otherMovingObj) {
+								continue;
+							}
+							
+							// Check for collisions
+							if(movingObj.collide(otherMovingObj)) {
+								
+								// If your ship was hit
+								if(movingObj instanceof Ship && otherMovingObj instanceof AlienProjectile) {
+									// remove the shot that hit you
+									screenObjects.remove(j);
+									
+									// remove ship
+									// screenObjects.remove(i);
+									
+									// explosion effect
+									
+									
+									// decrement lives
+									Screen.setLives(Screen.getLives() - 1);
+									
+									// if lives is still > 0, add a new ship
+									if(Screen.getLives() > 0) {
+										
+									}
+									else {
+										JOptionPane.showMessageDialog(null, "You're dead!");
+										System.exit(0);
+									}
+								}
+								
+								// If an invader was hit
+								if(movingObj instanceof Invader && !(otherMovingObj instanceof Bunker 
+										|| otherMovingObj instanceof AlienProjectile)) {							
+									// remove the shot that hit the invader
+									screenObjects.remove(j);
+									
+									// remove the invader
+									screenObjects.remove(i);
+									
+									// explosion effect
+									
+									// increment score
+									Invader deadInvader = (Invader) movingObj;
+
+									for(int k = 0; k < screenObjects.size(); k++) {
+										if(screenObjects.get(k) instanceof Score) {
+											ScreenObject score = screenObjects.get(k);
+											Score currentScore = (Score) score;
+											currentScore.setScore(currentScore.getScore() + deadInvader.getInvaderPoints());
+											break;
+										}
+									}
+									
+									// check to see if any other invaders are left
+									// if there are, start the next level and increment lives
+									int numOfInvadersLeft = 0;
+									
+									for(int k = 0; k < screenObjects.size(); k++) {
+										if(screenObjects.get(k) instanceof Invader) {
+											numOfInvadersLeft++;
+										}
+									}
+									
+									if(numOfInvadersLeft == 0) {
+										// start next level
+										
+										// increment lives
+										if(Screen.getLives() < 3) {
+											Screen.setLives(Screen.getLives() + 1);
+										}
+									}
+								}
+								
+								// If a bunker was hit by a player or invader shot
+								if(movingObj instanceof Bunker && (otherMovingObj instanceof ShipProjectile 
+										|| otherMovingObj instanceof AlienProjectile)) {
+									// remove the shot that hit the bunker
+									screenObjects.remove(j);
+									
+									// decrement hitPoints by 1
+									Bunker damagedBunker = (Bunker) movingObj;
+									damagedBunker.setHitPoints(damagedBunker.getHitPoints() - 1);
+									
+									// check if the bunker's hitPoints are divisible by 5
+									// and swap in the appropriate image
+									if(damagedBunker.getHitPoints() % 5 == 0) {
+										String imgName = "bunker" + String.valueOf(damagedBunker.getHitPoints()) + ".png";
+										ImageIcon newBunkerImg = new ImageIcon(imgName);
+										damagedBunker.setImage(newBunkerImg.getImage());
+									}
+									
+									// if it's == 0, remove the bunker
+									if(damagedBunker.getHitPoints() == 0) {
+										screenObjects.remove(i);
+									}
+								}
+								
+								// If a mystery ship was hit
+								if(movingObj instanceof MysteryShip) {
+									// remove the shot that hit the ship
+									screenObjects.remove(j);
+									
+									// remove the ship
+									screenObjects.remove(i);
+									
+									// explosion effect
+									
+									
+									// increment score
+									MysteryShip deadShip = (MysteryShip) movingObj;
+
+									for(int k = 0; k < screenObjects.size(); k++) {
+										if(screenObjects.get(k) instanceof Score) {
+											ScreenObject score = screenObjects.get(k);
+											Score currentScore = (Score) score;
+											currentScore.setScore(currentScore.getScore() + deadShip.getMysteryValue());
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+						
 			//make the invader oscillate
 			for (ScreenObject obj: screenObjects) {
 				if (obj instanceof Invader) {
@@ -298,6 +450,11 @@ public class Screen extends JPanel implements KeyListener
 				playerShip.setArbitraryVector(new ObjectVector(2, 0));
 				playerShip.move();
 				break;
+			case KeyEvent.VK_P:
+				timer.stop();
+				JOptionPane.showMessageDialog(null, "Game paused.");
+				timer.start();
+				break;
 		}
 		
 		repaint();
@@ -349,6 +506,7 @@ public class Screen extends JPanel implements KeyListener
 	/**
 	 * @param lives the lives to set
 	 */
-	public void setLives(int lives) {
-		this.lives = lives;
+	public static void setLives(int numLives) {
+		lives = numLives;
 	}
+}
