@@ -60,10 +60,6 @@ public abstract class MovingScreenObject extends ScreenObject
 		g.drawImage(arbitraryImage,  location.x,  location.y, size.width, size.height, null);
 	}
 	
-	public void collide(MovingScreenObject otherObj){
-		
-	}
-	
 	public void destruct(){
 		
 	}
@@ -110,4 +106,24 @@ public abstract class MovingScreenObject extends ScreenObject
 		this.angle = angle;
 	}
 	
+	public void setImage(Image i) {
+		arbitraryImage = i;
+	}
+	
+	/**
+	 * Return true if the objects collide.
+	 * 
+	 * @param obj The object whose position we're comparing.
+	 * @return True if there is a collision; false, otherwise. 
+	 */
+	public boolean collide(MovingScreenObject otherObj) {
+		Rectangle objRect = this.getSize();
+		Rectangle otherObjRect = otherObj.getSize();
+		objRect.setLocation(this.getLocation());
+		otherObjRect.setLocation(otherObj.getLocation());
+		if(otherObjRect.intersects(objRect)) {
+			return true;
+		}
+		return false;
+	}
 }
