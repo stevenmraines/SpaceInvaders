@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -61,7 +60,8 @@ public class Screen extends JPanel implements KeyListener
 	public static int mysteryX = screenWidth;
 	public static int mysteryWidth = 80;
 	public static int mysteryHeight = 50;
-	public static int mysteryPoints = 50;
+	Random generator = new Random();
+	protected int mysteryPoints = 50;
 	
 	//initialize score
 	public Score theScore; 
@@ -216,7 +216,11 @@ public class Screen extends JPanel implements KeyListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e)
-		{		
+		{	
+			mysteryPoints = 50;
+			int rand = generator.nextInt(5) + 1;
+			mysteryPoints = mysteryPoints * rand;
+			
 			// Check for collisions
 			for(int i = 0; i < screenObjects.size(); i++) {
 				
@@ -393,12 +397,13 @@ public class Screen extends JPanel implements KeyListener
 			Invader.invaderVector.setChangeY(0);
 			
 			//randomly generate a mystery ship
+			if (Math.random() < 0.001+(.001*(level.getLevelNumber()/2))){
+			}
 			MysteryShip mysteryShip = new MysteryShip(new Point(mysteryX, mysteryY), new Rectangle(mysteryWidth, mysteryHeight), mysteryPoints, mysteryImg.getImage());
 			mysteryShip.setArbitraryVector(new ObjectVector(-4 - (level.getLevelNumber()/4),0));
 			
 			if (Math.random() < 0.001+(.001*(level.getLevelNumber()/2))){
 				screenObjects.add(mysteryShip);
-				
 			}
 			
 			//randomly generate an alien shot
