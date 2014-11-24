@@ -1,11 +1,7 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 /**
  * 
  * @author Derick Owens
@@ -13,6 +9,14 @@ import java.awt.geom.Rectangle2D;
  */
 
 public class ShipProjectile extends MovingScreenObject {
+	
+	/**
+	 * 
+	 * @param location location of the projectile
+	 * @param size size of the projectile
+	 * @param i image of the projectile
+	 * @param angle angle the projectile is aiming toward
+	 */
 	
 	public ShipProjectile(Point location, Rectangle size, Image i, double angle){
 		super(location, size, i, angle);
@@ -28,6 +32,9 @@ public class ShipProjectile extends MovingScreenObject {
 		arbitraryVector = new ObjectVector(changeX, changeY);
 	}
 	
+	/**
+	 * simulates movement of the projectile
+	 */
 	public void move() 
 		{
 			location.x += arbitraryVector.getChangeX();
@@ -35,4 +42,3 @@ public class ShipProjectile extends MovingScreenObject {
 		}
 		
 }
-
