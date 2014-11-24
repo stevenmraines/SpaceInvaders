@@ -1,19 +1,27 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 /**
  * 
  * @author Derick Owens
  *
  */
 
+/**
+ * 
+ * This class creates projectiles shot by aliens
+ *
+ */
 public class AlienProjectile extends MovingScreenObject {
 	
+	/**
+	 * 
+	 * @param location location of the shot when it first spawns
+	 * @param size size of the shot
+	 * @param i Image used to represent the shot
+	 * @param angle angle at which the shot is aimed
+	 */
 	public AlienProjectile(Point location, Rectangle size, Image i, double angle){
 		super(location, size, i, angle);
 		
@@ -28,6 +36,9 @@ public class AlienProjectile extends MovingScreenObject {
 		arbitraryVector = new ObjectVector(changeX, changeY);
 	}
 	
+	/**
+	 * How the shot moves
+	 */
 	public void move() 
 		{
 			location.x += arbitraryVector.getChangeX();
