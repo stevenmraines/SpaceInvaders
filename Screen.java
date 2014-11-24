@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,14 +13,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Iterator;
-
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-
 
 /**
  * @author Derick Owens and J halstead and Steven Raines
@@ -93,6 +90,10 @@ public class Screen extends JPanel implements KeyListener
 	int bunkerHeight;
 	int shipHeight;
 	
+	/**
+	 * This handles all of the components of the game. It adds the moving objects and non-moving objects and also contains the timer that
+	 * simulates movement.
+	 */
 	public Screen()
 	{
 		explosionImg.setImageObserver(this);
@@ -122,7 +123,9 @@ public class Screen extends JPanel implements KeyListener
 		// Add the key listener to control the laser cannon
 		this.addKeyListener(this);
 	}
-	
+	/**
+	 * Draw everything in the screenObjects array
+	 */
 	public void paintComponent(Graphics g)
 	{
 		screenWidth = this.getWidth();
@@ -155,6 +158,10 @@ public class Screen extends JPanel implements KeyListener
 	       
 	 }
 	}
+	/**
+	 * Add the moving objects to an array
+	 */
+	
 	public void addMovingObjects()
 	{
 		Iterator<ScreenObject> it = screenObjects.iterator();
@@ -166,7 +173,6 @@ public class Screen extends JPanel implements KeyListener
 		}
 		
 		//add the laser cannon
-		
 		Rectangle shipDimensions = new Rectangle(60,40);
 		shipHeight = (int) (screenHeight - shipDimensions.getHeight()*2.5);
 		int x = (screenWidth / 2) - 30;
@@ -177,7 +183,6 @@ public class Screen extends JPanel implements KeyListener
 		screenObjects.add(0,laserCannon);
 		
 		//add the bunkers
-		
 		Rectangle bunkerDimensions = new Rectangle(80,60);
 		bunkerHeight = (int) (screenHeight - bunkerDimensions.getHeight()*3);
 		int bunkerX = (screenWidth / 5) - 15;
@@ -196,10 +201,13 @@ public class Screen extends JPanel implements KeyListener
 		screenObjects.add(bunker3);
 		screenObjects.add(bunker4);
 
-				
 		//add the invaders
 		addInvaders();
 	}
+	
+	/**
+	 * Add the invaders to an array
+	 */
 	
 	public void addInvaders() {
 		startAdding = screenWidth/5;
@@ -229,7 +237,14 @@ public class Screen extends JPanel implements KeyListener
 		screenObjects.add(invader5);
 		}
 	}
-		
+	
+	/**
+	 * 
+	 * @author Derick Owens and Steven Raines
+	 * 
+	 * This class handles all events that need to simulate movement and some game sounds
+	 *
+	 */
 	private class TimerListener implements ActionListener 
 	{
 		@Override
@@ -510,7 +525,6 @@ public class Screen extends JPanel implements KeyListener
 			}
 			
 			//randomly generate an alien shot
-			
 			for (ScreenObject obj: screenObjects) {
 				if (obj instanceof Invader) {
 					if (Math.random() < .0005 + (.0005*(level.getLevelNumber()/2))){
@@ -532,6 +546,10 @@ public class Screen extends JPanel implements KeyListener
 	}
 	
 	@Override
+	
+	/**
+	 * Handles key events
+	 */
 	public void keyPressed(KeyEvent event){
 		int keyCode = event.getKeyCode();
 		Ship playerShip = null;
@@ -539,6 +557,9 @@ public class Screen extends JPanel implements KeyListener
 			playerShip = (Ship) screenObjects.get(0);
 		}
 		switch (keyCode) {
+		
+		//press x to fire with the gatling gun
+		
 			case KeyEvent.VK_X:
 				if (playerShip != null && playerShip.getAmmo() > 0) {
 					Random gattlingRand = new Random();
@@ -561,15 +582,20 @@ public class Screen extends JPanel implements KeyListener
 					playSound(noAmmoSound);
 				}
 				break;
+				
+			//press left arrow to go left
 			case KeyEvent.VK_LEFT:
 				playerShip.setArbitraryVector(new ObjectVector(-3, 0));
 				playerShip.move();
 				break;
-				
+			
+			//press right arrow to go right
 			case KeyEvent.VK_RIGHT:
 				playerShip.setArbitraryVector(new ObjectVector(3, 0));
 				playerShip.move();
 				break;
+			
+			//press p to pause and unpause
 			case KeyEvent.VK_P:
 				if(isPaused) {
 					timer.start();
@@ -598,6 +624,7 @@ public class Screen extends JPanel implements KeyListener
 			playerShip = (Ship) screenObjects.get(0);
 		}
 		
+		//press space to shoot
 		if(key == KeyEvent.VK_SPACE) {
 			if (playerShip != null) {
 				Point p = playerShip.getLocation();
