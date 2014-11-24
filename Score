@@ -35,6 +35,7 @@ public class Score extends ScreenObject
    @Override
    public void draw(Graphics g)
    {
+	   //import font
 	   try{
 		   Font finalFont = null;
 		   File gameFont = new File("PressStart2P.ttf");
@@ -48,6 +49,7 @@ public class Score extends ScreenObject
 		   }catch (IOException f){
 		   f.printStackTrace();
 	   }
+	   //draw the score display
          g.setColor(Color.white);
          g.setFont(new Font("Press Start 2P",Font.BOLD, 24));
          g.drawString("SCORE:"+ score, location.x, location.y);
