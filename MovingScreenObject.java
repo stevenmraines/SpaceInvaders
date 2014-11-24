@@ -21,9 +21,9 @@ public abstract class MovingScreenObject extends ScreenObject
 	
 	/**
 	 * 
-	 * @param location
-	 * @param size
-	 * @param i
+	 * @param location location of the moving screen object
+	 * @param size size of the object
+	 * @param i image of the object
 	 */
 	
 	public MovingScreenObject(Point location, Rectangle size, Image i, double angle)
@@ -32,10 +32,9 @@ public abstract class MovingScreenObject extends ScreenObject
 		arbitraryImage = i;
 		this.angle = angle;
 	}
-	/* (non-Javadoc)
-	 * @see ScreenObject#draw(java.awt.Graphics)
+	/**
+	 * Move the screen object
 	 */
-
 	public void move() 
 	{
 		location.x += arbitraryVector.getChangeX();
@@ -55,13 +54,12 @@ public abstract class MovingScreenObject extends ScreenObject
 		}
 	}
 	
+	/**
+	 * Draw the screen object
+	 */
 	public void draw(Graphics g)
 	{
 		g.drawImage(arbitraryImage,  location.x,  location.y, size.width, size.height, null);
-	}
-	
-	public void destruct(){
-		
 	}
 
 	/**
