@@ -23,7 +23,7 @@ public class Explosion extends MovingScreenObject {
 	 */	
 	public Explosion(Point location, Rectangle size, Image i, double angle) {
 		super(location, size, i, angle);
-		age = 4;
+		age = 10;
 	}
 	
 	/**
