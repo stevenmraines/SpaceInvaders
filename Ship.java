@@ -14,6 +14,9 @@ public class Ship extends MovingScreenObject {
 	
 	/**
 	 * 
+	 * @param location location of the ship
+	 * @param size size of the ship
+	 * @param i image of the ship
 	 */
 	public Ship(Point location, Rectangle size, Image i){
 		super(location, size, i, 0);
@@ -33,6 +36,9 @@ public class Ship extends MovingScreenObject {
 	}
 	
 	@Override
+	/**
+	 * Simulate movement
+	 */
 	public void move() {
 		
 		// Check which direction the player is trying to move
@@ -55,16 +61,26 @@ public class Ship extends MovingScreenObject {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return see how much ammo there is
+	 */
 	public int getAmmo() {
 		return gattlingAmmo;
 	}
 	
+	/**
+	 * uses the ammo available to the player
+	 */
 	public void decrementAmmo() {
 		if(gattlingAmmo > 0) {
 			gattlingAmmo--;
 		}
 	}
 	
+	/**
+	 * adds ammo for the gattling gun when picked up
+	 */
 	public void addAmmo() {
 		gattlingAmmo += 50;
 	}
