@@ -1,19 +1,16 @@
 import javax.swing.JFrame;
-
-/**
- * 
- */
-
 /**
  * @author Derick Owens
  *
  */
 public class GameWindow extends JFrame {
+	/**
+	 * Call screen to produce the game in a window
+	 */
 	public GameWindow(){
 		setTitle("Space Invaders");
 		Screen screen = new Screen();
 		add(screen);
-		//disable resizing
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
@@ -27,3 +24,4 @@ public class GameWindow extends JFrame {
 		GameWindow window = new GameWindow();
 	}
 }
+
