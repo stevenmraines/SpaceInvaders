@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.ImageObserver;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,6 +29,9 @@ import javax.sound.sampled.Clip;
  */
 public class Screen extends JPanel implements KeyListener
 {
+	// create boolean to handle pause stuff
+	public static boolean isPaused = false;
+	
 	//Prepare the array, the screen, and the images for all moving objects
 	public static int screenWidth = 800;
 	public static int screenHeight = 700;
@@ -38,13 +42,15 @@ public class Screen extends JPanel implements KeyListener
 	public static ImageIcon invaderImg3 = new ImageIcon("invader2.png");
 	public static ImageIcon laserCannonImg = new ImageIcon("laserCannon.png");
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
+	public static ImageIcon powerupImg = new ImageIcon("gattlingPowerup.gif");
 	public static ImageIcon bunkerImg = new ImageIcon("bunker40.png");
 	public static ImageIcon mysteryImg = new ImageIcon("mysteryShip.png");
 	public static ImageIcon shipShotImg = new ImageIcon("shipShot.png");
+	public static ImageIcon shipGattlingShotImg = new ImageIcon("gattlingShot.png");
 	public static ImageIcon alienShotImg = new ImageIcon("alienShot.png");
 	
 	//initialize level
-	static int currentLevel = 4;
+	static int currentLevel = 0;
 	static Level level = new Level(currentLevel, new Point(screenWidth-200, 30), new Rectangle(0,0));
 	static int levelDisplay = level.getLevelNumber() + 1;
 	
@@ -56,8 +62,8 @@ public class Screen extends JPanel implements KeyListener
 	public static int invader3Points = 40;
 	public static ObjectVector invaderVector = new ObjectVector(1+level.getLevelNumber()/2,0);
 	public static int invaderY = Invader.getBaseY();
-	public int startAdding = screenWidth/5;
-	public int endAdding = startAdding*4;
+	public int startAdding;
+	public int endAdding;
 	
 	//initialize mysteryShip specifics
 	public static int mysteryY = screenHeight/10;
@@ -89,6 +95,9 @@ public class Screen extends JPanel implements KeyListener
 	
 	public Screen()
 	{
+		explosionImg.setImageObserver(this);
+		powerupImg.setImageObserver(this);
+		
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
 		setBackground(Color.black);
 		screenObjects = new ArrayList<ScreenObject>();
@@ -189,7 +198,12 @@ public class Screen extends JPanel implements KeyListener
 
 				
 		//add the invaders
-		
+		addInvaders();
+	}
+	
+	public void addInvaders() {
+		startAdding = screenWidth/5;
+		endAdding = startAdding*4;
 		for (int addPoint = endAdding; startAdding < endAdding; endAdding = endAdding - 50)
 		{
 		int	invaderX = endAdding;
@@ -255,6 +269,20 @@ public class Screen extends JPanel implements KeyListener
 							// Check for collisions
 							if(movingObj.collide(otherMovingObj)) {
 								
+								// If the player picks up a powerup
+								if(movingObj instanceof Ship && otherMovingObj instanceof Powerup) {
+									// remove the powerup
+									screenObjects.remove(j);
+									
+									// play sound
+									File powerupSound = new File("powerupPickup.WAV");
+									playSound(powerupSound);
+									
+									// addAmmo
+									Ship playerShip = (Ship) movingObj;
+									playerShip.addAmmo();
+								}
+								
 								// If your ship was hit
 								if(movingObj instanceof Ship && otherMovingObj instanceof AlienProjectile) {
 									// remove the shot that hit you
@@ -276,8 +304,17 @@ public class Screen extends JPanel implements KeyListener
 									// decrement lives
 									Screen.setLives(Screen.getLives() - 1);
 									
-									// if lives is still > 0, add a new ship
+									// if lives is still > 0, delete all alien
+									// shots, and remove all ammo
 									if(Screen.getLives() > 0) {
+										// delete all alien shots on the screen
+										for(int m = 0; m < screenObjects.size(); m++) {
+											if(screenObjects.get(m) instanceof AlienProjectile) {
+												screenObjects.remove(m);
+											}
+										}
+										
+										// add a new ship
 										Rectangle shipDimensions = new Rectangle(60,40);
 										shipHeight = (int) (screenHeight - shipDimensions.getHeight()*2.5);
 										int x = (screenWidth / 2) - 30;
@@ -324,7 +361,7 @@ public class Screen extends JPanel implements KeyListener
 									}
 									
 									// check to see if any other invaders are left
-									// if there are, start the next level and increment lives
+									// if there aren't, start the next level and increment lives
 									int numOfInvadersLeft = 0;
 									
 									for(int k = 0; k < screenObjects.size(); k++) {
@@ -336,11 +373,21 @@ public class Screen extends JPanel implements KeyListener
 									
 									if(numOfInvadersLeft == 0) {
 										// start next level
+										int nextLevel = level.getLevelNumber() + 1;
+										level.setLevelNumber(nextLevel);
+										setLevelDisplay(nextLevel + 1);
+										addInvaders();
 										
 										// increment lives
 										if(Screen.getLives() < 3) {
 											Screen.setLives(Screen.getLives() + 1);
 										}
+										
+										// give the player a powerup
+										Random randomGen = new Random();
+										int powerupX = 100 + randomGen.nextInt(600);
+										Powerup gattlingPowerup = new Powerup(new Point(powerupX, shipHeight), new Rectangle(40, 40), powerupImg.getImage());
+										screenObjects.add(gattlingPowerup);
 									}
 								}
 								
@@ -437,7 +484,7 @@ public class Screen extends JPanel implements KeyListener
 				ScreenObject obj = screenObjects.get(i);
 				if(obj instanceof Explosion) {
 					Explosion exp = (Explosion) obj;
-					if(exp.getAge() == 0) {
+					if(exp.getAge() <= 0) {
 						screenObjects.remove(obj);
 					}
 				}
@@ -458,7 +505,8 @@ public class Screen extends JPanel implements KeyListener
 			
 			if (Math.random() < 0.001+(.001*(level.getLevelNumber()/2))){
 				screenObjects.add(mysteryShip);
-				
+				File shotSound = new File("mysteryShip.WAV");
+				playSound(shotSound);				
 			}
 			
 			//randomly generate an alien shot
@@ -473,6 +521,8 @@ public class Screen extends JPanel implements KeyListener
 					alienShot.setArbitraryVector(new ObjectVector(0,7));
 					screenObjects.add(alienShot);
 					timer.start();
+					File shotSound = new File("invaderShot.WAV");
+					playSound(shotSound);
 					}
 				}
 			}
@@ -489,20 +539,28 @@ public class Screen extends JPanel implements KeyListener
 			playerShip = (Ship) screenObjects.get(0);
 		}
 		switch (keyCode) {
-			//shoot if space bar is pressed
-			case KeyEvent.VK_SPACE:
-				if (playerShip != null) {
+			case KeyEvent.VK_X:
+				if (playerShip != null && playerShip.getAmmo() > 0) {
+					Random gattlingRand = new Random();
+					int gatVecY = gattlingRand.nextInt(10) - 15;
+					ObjectVector randomVector = new ObjectVector(0, gatVecY);
+					int gattlingX = gattlingRand.nextInt(39) - 20;
 					Point p = playerShip.getLocation();
 					double a = playerShip.getAngle();
 					Rectangle r = playerShip.getSize();
-					ShipProjectile shot = new ShipProjectile(new Point (p.x + r.width/2, shipHeight-12), new Rectangle(7,30), shipShotImg.getImage(), a);
-					shot.setArbitraryVector(projectileVector);
+					ShipProjectile shot = new ShipProjectile(new Point (p.x + r.width/2 + gattlingX, shipHeight-20), new Rectangle(7,30), shipGattlingShotImg.getImage(), a);
+					shot.setArbitraryVector(randomVector);
 					screenObjects.add(shot);
-					File shotSound = new File("shipShot.WAV");
+					File shotSound = new File("gattlingShot.WAV");
 					playSound(shotSound);
+					playerShip.decrementAmmo();
+				}
+				else if(playerShip != null && playerShip.getAmmo() == 0) {
+					// play out of ammo sound
+					File noAmmoSound = new File("noAmmo.WAV");
+					playSound(noAmmoSound);
 				}
 				break;
-			
 			case KeyEvent.VK_LEFT:
 				playerShip.setArbitraryVector(new ObjectVector(-3, 0));
 				playerShip.move();
@@ -513,10 +571,17 @@ public class Screen extends JPanel implements KeyListener
 				playerShip.move();
 				break;
 			case KeyEvent.VK_P:
-				timer.stop();
-				JOptionPane.showMessageDialog(null, "Game paused.");
-				timer.start();
+				if(isPaused) {
+					timer.start();
+					isPaused = false;
+				}
+				else {
+					timer.stop();
+					isPaused = true;
+				}
 				break;
+			case KeyEvent.VK_ESCAPE:
+				System.exit(0);
 		}
 		
 		repaint();
@@ -525,14 +590,30 @@ public class Screen extends JPanel implements KeyListener
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
 		// Store the key that is pressed
 		int key = e.getKeyCode();
+		
+		Ship playerShip = null;
+		if (screenObjects.get(0) instanceof Ship) {
+			playerShip = (Ship) screenObjects.get(0);
+		}
+		
+		if(key == KeyEvent.VK_SPACE) {
+			if (playerShip != null) {
+				Point p = playerShip.getLocation();
+				double a = playerShip.getAngle();
+				Rectangle r = playerShip.getSize();
+				ShipProjectile shot = new ShipProjectile(new Point (p.x + (r.width/2 - 3), shipHeight-20), new Rectangle(7,30), shipShotImg.getImage(), a);
+				shot.setArbitraryVector(projectileVector);
+				screenObjects.add(shot);
+				File shotSound = new File("shipShot.WAV");
+				playSound(shotSound);
+			}
+		}
 		
 		// Reset the vector to 0, 0
 		if(screenObjects.get(0) instanceof Ship) {
 			if(key == e.VK_LEFT || key == e.VK_RIGHT) {
-				Ship playerShip = (Ship) screenObjects.get(0);
 				playerShip.setArbitraryVector(new ObjectVector(0, 0));
 				playerShip.move();
 			}
@@ -541,7 +622,7 @@ public class Screen extends JPanel implements KeyListener
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	/**
