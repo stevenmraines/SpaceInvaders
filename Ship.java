@@ -10,6 +10,8 @@ import java.awt.Rectangle;
 
 public class Ship extends MovingScreenObject {
 	private double angle;
+	private int gattlingAmmo = 0;
+	
 	/**
 	 * 
 	 */
@@ -51,5 +53,19 @@ public class Ship extends MovingScreenObject {
 				location.x += arbitraryVector.getChangeX();
 			}
 		}
+	}
+	
+	public int getAmmo() {
+		return gattlingAmmo;
+	}
+	
+	public void decrementAmmo() {
+		if(gattlingAmmo > 0) {
+			gattlingAmmo--;
+		}
+	}
+	
+	public void addAmmo() {
+		gattlingAmmo += 50;
 	}
 }
