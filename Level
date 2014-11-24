@@ -23,6 +23,8 @@ public class Level extends ScreenObject{
 	 * Each Level has an associated number starting at "number".
 	 * Subsequent levels are higher.  
 	 * @param number The level value.
+	 * @param location the location of the level output
+	 * @param size the size of the output box
 	 */
 	public Level(int number, Point location, Rectangle size) {
 		super(location, size);
@@ -42,8 +44,13 @@ public class Level extends ScreenObject{
 	public void setLevelNumber(int levelNumber) {
 		this.levelNumber = levelNumber;
 	}
+	
+	/**
+	 * draw the Level
+	 */
 	public void draw (Graphics g)
 	   {
+		//import font
 		   try{
 			   Font finalFont = null;
 			   File gameFont = new File("PressStart2P.ttf");
@@ -57,6 +64,7 @@ public class Level extends ScreenObject{
 			   }catch (IOException f){
 			   f.printStackTrace();
 		   }
+		   //write the Level
 	      g.setColor(Color.white);
 	      g.setFont(new Font("Press Start 2P",Font.BOLD, 24));
 	      g.drawString("LEVEL:"+ Screen.getLevelDisplay() , location.x, location.y);
