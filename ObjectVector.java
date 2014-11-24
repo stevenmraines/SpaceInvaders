@@ -11,8 +11,8 @@ public class ObjectVector {
 	private double changeY;
 	
 	/**
-	 * @param changeX
-	 * @param changeY
+	 * @param changeX the x value of the vector
+	 * @param changeY the y value of the vector
 	 */
 	public ObjectVector(double changeX, double changeY){
 		super();
