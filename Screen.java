@@ -25,7 +25,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 /**
- * @author Derick Owens and J halstead and Steven Raines
+ * @author Derick Owens and Steven Raines
  *
  */
 public class Screen extends JPanel implements KeyListener
@@ -118,9 +118,7 @@ public class Screen extends JPanel implements KeyListener
 		
 		timer = new javax.swing.Timer(25, new TimerListener());
 		timer.start();
-		
-		// Was having a weird problem where the KeyPressed
-		// method was never getting called, this fixes it
+
 		this.setFocusable(true);
 		this.requestFocus();
 		
@@ -154,8 +152,8 @@ public class Screen extends JPanel implements KeyListener
 		   f.printStackTrace();
 	   }
 		
-	if (this.displayPlayNextLife){
-		if (lives > 0){
+	if (displayPlayNextLife){
+		if (lives > 0 && lives < 3){
 		timer.stop();
 	   g.setColor(Color.white);
 	   g.setFont(new Font ("Press Start 2P", Font.BOLD, 24));
@@ -163,12 +161,13 @@ public class Screen extends JPanel implements KeyListener
 	   g.drawString("PRESS ENTER TO CONTINUE", 129, (int)(0.15*screenHeight));
 	}}
 	
-	if (this.displayGameOver){
+	if (displayGameOver){
 		timer.stop();
 		for(int i = 0; i < screenObjects.size()-1; i++) {
 			screenObjects.remove(i);
 		repaint();
 		}
+		
 	   g.setColor(Color.white);
 	   g.setFont(new Font("Press Start 2P", Font.BOLD, 36));
 	   g.drawString("GAME OVER", 230, (int)(0.5*screenHeight));
@@ -176,7 +175,7 @@ public class Screen extends JPanel implements KeyListener
 	   g.drawString("WOULD YOU LIKE TO PLAY AGAIN? (Y/N)", 50, (int)(0.6*screenHeight));   
 	}
 	   
-	 if (this.displayNewLevel) {
+	 if (displayNewLevel) {
 		timer.stop();
 	    g.setColor(Color.white);
 	    g.setFont(new Font ("Press Start 2P", Font.BOLD, 30));
@@ -369,7 +368,7 @@ public class Screen extends JPanel implements KeyListener
 										laserCannon.setAngle(90);
 										screenObjects.add(0,laserCannon);
 									}
-									else {
+									if(Screen.getLives() == 0) {
 										displayGameOver = true;
 									}
 								}
@@ -570,36 +569,8 @@ public class Screen extends JPanel implements KeyListener
 					}
 					
 				}
-			}
-			boolean shipFound = false;
-			boolean explosionFound = false;
-			boolean invaderFound = false;
-			for (ScreenObject obj : screenObjects) {
-				if (obj instanceof Ship) {
-					shipFound = true;
-				} 
-				else if (obj instanceof Explosion) {
-					explosionFound = true;
-				}
-				else if (obj instanceof Invader) {
-					invaderFound = true;
-				}
-			}
-			if (!shipFound && !explosionFound) {
-				timer.stop();
-				if (lives > 0) {
-					displayPlayNextLife = true;
-				}
-				else {
-					displayGameOver = true;
-				}
-			}
-			else {
-				if (!invaderFound) {
-					timer.stop();
-					displayNewLevel = true;
-				}
-			}
+			}			
+			
 			repaint();
 		}
 	}
@@ -693,7 +664,7 @@ public class Screen extends JPanel implements KeyListener
 				}
 			
 			case KeyEvent.VK_N:
-				if (displayGameOver){
+				if (displayGameOver = true){
 					System.exit(0);
 				}
 				
