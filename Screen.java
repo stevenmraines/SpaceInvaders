@@ -81,9 +81,9 @@ public class Screen extends JPanel implements KeyListener
 	public static int lives = 3;
 	
 	//initialize boolean values
-	private boolean displayPlayNextLife = false;
-	private boolean displayGameOver = false;
-	private boolean displayNewLevel = false;
+	protected static boolean displayPlayNextLife = false;
+	protected static boolean displayGameOver = false;
+	protected static boolean displayNewLevel = false;
 	
 	//initialize shot vector and details
 	public static ObjectVector projectileVector = new ObjectVector(0, -8);
@@ -155,11 +155,13 @@ public class Screen extends JPanel implements KeyListener
 	   }
 		
 	if (this.displayPlayNextLife){
+		if (lives > 0){
+		timer.stop();
 	   g.setColor(Color.white);
 	   g.setFont(new Font ("Press Start 2P", Font.BOLD, 24));
-	   g.drawString("YOU HAVE " + lives + "CANNONS LEFT", 150,(int)(0.4*screenHeight));
-	   g.drawString("PRESS ENTER TO CONTINUE", 135, (int)(0.6*screenHeight));
-	}
+	   g.drawString("YOU HAVE " + lives + " CANNONS LEFT", 125,(int)(0.1*screenHeight));
+	   g.drawString("PRESS ENTER TO CONTINUE", 129, (int)(0.15*screenHeight));
+	}}
 	
 	if (this.displayGameOver){
 		timer.stop();
@@ -341,6 +343,8 @@ public class Screen extends JPanel implements KeyListener
 									// play sound
 									File shotSound = new File("shipExplosion.WAV");
 									playSound(shotSound);
+									
+									displayPlayNextLife = true;
 									
 									// decrement lives
 									Screen.setLives(Screen.getLives() - 1);
@@ -663,7 +667,7 @@ public class Screen extends JPanel implements KeyListener
 				break;
 				
 			case KeyEvent.VK_ENTER:
-				if (displayNewLevel = true){
+				if (displayNewLevel){
 					addInvaders();
 				}
 				displayNewLevel = false;
