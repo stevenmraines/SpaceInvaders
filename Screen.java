@@ -1,7 +1,9 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -10,9 +12,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.ImageObserver;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Iterator;
+
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -135,26 +139,48 @@ public class Screen extends JPanel implements KeyListener
 		{
 			obj.draw(g);
 		}
+	//import font
+	   try{
+		   Font finalFont = null;
+		   File gameFont = new File("PressStart2P.ttf");
+		   if (gameFont.exists()){
+			   finalFont = Font.createFont(Font.TRUETYPE_FONT, gameFont).deriveFont(Font.PLAIN, 22f);
+			   GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			   ge.registerFont(finalFont);
+		   }
+		   }catch (FontFormatException e){
+			   e.printStackTrace();
+		   }catch (IOException f){
+		   f.printStackTrace();
+	   }
 		
 	if (this.displayPlayNextLife){
 	   g.setColor(Color.white);
-	   g.setFont(new Font ("Serif", Font.BOLD, 36));
-	   g.drawString("You have " + lives + "Cannons left ", 150,(int)(0.4*screenHeight));
-	   g.drawString("Press enter to  Continue", 135, (int)(0.6*screenHeight));
+	   g.setFont(new Font ("Press Start 2P", Font.BOLD, 24));
+	   g.drawString("YOU HAVE " + lives + "CANNONS LEFT", 150,(int)(0.4*screenHeight));
+	   g.drawString("PRESS ENTER TO CONTINUE", 135, (int)(0.6*screenHeight));
 	}
 	
 	if (this.displayGameOver){
+		timer.stop();
+		for(int i = 0; i < screenObjects.size()-1; i++) {
+			screenObjects.remove(i);
+		repaint();
+		}
 	   g.setColor(Color.white);
-	   g.setFont(new Font("Serif", Font.BOLD, 36));
-	   g.drawString("Game Over", 205, (int)(0.4*screenHeight));
-	   g.drawString("Would you like to play again? (Y/N)", 30, (int)(0.6*screenHeight));   
+	   g.setFont(new Font("Press Start 2P", Font.BOLD, 36));
+	   g.drawString("GAME OVER", 230, (int)(0.5*screenHeight));
+	   g.setFont(new Font("Press Start 2P", Font.BOLD, 20));
+	   g.drawString("WOULD YOU LIKE TO PLAY AGAIN? (Y/N)", 50, (int)(0.6*screenHeight));   
 	}
 	   
 	 if (this.displayNewLevel) {
+		timer.stop();
 	    g.setColor(Color.white);
-	    g.setFont(new Font ("Serif", Font.BOLD, 36));
-	    //g.drawString("you have won "+ ((Object) currentLevel.getlevelNumber()), 190, (int)(0.6*screenHeight));
-	    g.drawString("Press enter to  Continue", 135, (int)(0.6*screenHeight));
+	    g.setFont(new Font ("Press Start 2P", Font.BOLD, 30));
+	    g.drawString("YOU WON LEVEL " + (levelDisplay-1)+"!", 145, (int)(0.5*screenHeight));
+	    g.setFont(new Font ("Press Start 2P", Font.BOLD, 24));
+	    g.drawString("PRESS ENTER TO CONTINUE", 120, (int)(0.6*screenHeight));
 	       
 	 }
 	}
@@ -340,8 +366,7 @@ public class Screen extends JPanel implements KeyListener
 										screenObjects.add(0,laserCannon);
 									}
 									else {
-										JOptionPane.showMessageDialog(null, "You're dead!");
-										System.exit(0);
+										displayGameOver = true;
 									}
 								}
 								
@@ -387,12 +412,12 @@ public class Screen extends JPanel implements KeyListener
 									}
 									
 									if(numOfInvadersLeft == 0) {
+										if (!displayNewLevel){
+										displayNewLevel = true;
 										// start next level
 										int nextLevel = level.getLevelNumber() + 1;
 										level.setLevelNumber(nextLevel);
 										setLevelDisplay(nextLevel + 1);
-										addInvaders();
-										
 										// increment lives
 										if(Screen.getLives() < 3) {
 											Screen.setLives(Screen.getLives() + 1);
@@ -403,6 +428,7 @@ public class Screen extends JPanel implements KeyListener
 										int powerupX = 100 + randomGen.nextInt(600);
 										Powerup gattlingPowerup = new Powerup(new Point(powerupX, shipHeight), new Rectangle(40, 40), powerupImg.getImage());
 										screenObjects.add(gattlingPowerup);
+										}
 									}
 								}
 								
@@ -470,7 +496,7 @@ public class Screen extends JPanel implements KeyListener
 				}
 			}
 						
-			//make the invader oscillate
+			//make the invaders oscillate
 			for (ScreenObject obj: screenObjects) {
 				if (obj instanceof Invader) {
 					if (obj.getLocation().getX() <= 100) {
@@ -538,9 +564,38 @@ public class Screen extends JPanel implements KeyListener
 					File shotSound = new File("invaderShot.WAV");
 					playSound(shotSound);
 					}
+					
 				}
 			}
-		
+			boolean shipFound = false;
+			boolean explosionFound = false;
+			boolean invaderFound = false;
+			for (ScreenObject obj : screenObjects) {
+				if (obj instanceof Ship) {
+					shipFound = true;
+				} 
+				else if (obj instanceof Explosion) {
+					explosionFound = true;
+				}
+				else if (obj instanceof Invader) {
+					invaderFound = true;
+				}
+			}
+			if (!shipFound && !explosionFound) {
+				timer.stop();
+				if (lives > 0) {
+					displayPlayNextLife = true;
+				}
+				else {
+					displayGameOver = true;
+				}
+			}
+			else {
+				if (!invaderFound) {
+					timer.stop();
+					displayNewLevel = true;
+				}
+			}
 			repaint();
 		}
 	}
@@ -558,7 +613,7 @@ public class Screen extends JPanel implements KeyListener
 		}
 		switch (keyCode) {
 		
-		//press x to fire with the gatling gun
+		//press x to fire with the gattling gun
 		
 			case KeyEvent.VK_X:
 				if (playerShip != null && playerShip.getAmmo() > 0) {
@@ -606,6 +661,38 @@ public class Screen extends JPanel implements KeyListener
 					isPaused = true;
 				}
 				break;
+				
+			case KeyEvent.VK_ENTER:
+				if (displayNewLevel = true){
+					addInvaders();
+				}
+				displayNewLevel = false;
+				displayPlayNextLife = false;
+				timer.start();
+				break;
+			
+			case KeyEvent.VK_Y:
+				if (displayGameOver){
+					currentLevel = 0;
+					lives = 3;
+					addMovingObjects();
+				    Score theScore = new Score(new Point(screenWidth/2 - 400, 30), new Rectangle(0,0));
+					screenObjects.add(theScore);
+					
+				    Lives playerLives = new Lives(new Point(screenWidth/2 - 100, 30), new Rectangle(0,0));
+					screenObjects.add(playerLives);
+					
+					screenObjects.add(level);
+					displayGameOver = false;
+					timer.start();
+				break;
+				}
+			
+			case KeyEvent.VK_N:
+				if (displayGameOver){
+					System.exit(0);
+				}
+				
 			case KeyEvent.VK_ESCAPE:
 				System.exit(0);
 		}
@@ -695,5 +782,17 @@ public class Screen extends JPanel implements KeyListener
 		catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * @return the currentLevel
+	 */
+	public static int getCurrentLevel() {
+		return currentLevel;
+	}
+	/**
+	 * @param currentLevel the currentLevel to set
+	 */
+	public static void setCurrentLevel(int currentLevel) {
+		Screen.currentLevel = currentLevel;
 	}
 }
