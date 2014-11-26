@@ -43,6 +43,7 @@ public class Screen extends JPanel implements KeyListener
 	public static ImageIcon invaderImg3 = new ImageIcon("invader2.png");
 	public static ImageIcon laserCannonImg = new ImageIcon("laserCannon.png");
 	public static ImageIcon explosionImg = new ImageIcon("explosion.gif");
+	public static ImageIcon shotCollisionImg = new ImageIcon("shotCollision.gif");
 	public static ImageIcon powerupImg = new ImageIcon("gattlingPowerup.gif");
 	public static ImageIcon bunkerImg = new ImageIcon("bunker40.png");
 	public static ImageIcon mysteryImg = new ImageIcon("mysteryShip.png");
@@ -51,9 +52,13 @@ public class Screen extends JPanel implements KeyListener
 	public static ImageIcon alienShotImg = new ImageIcon("alienShot.png");
 	
 	//initialize level
-	static int currentLevel = 0;
+	static int currentLevel = 9;
 	static Level level = new Level(currentLevel, new Point(screenWidth-200, 30), new Rectangle(0,0));
 	static int levelDisplay = level.getLevelNumber() + 1;
+	
+	//initialize screen ammo count
+	static int currentAmmo = 0;
+	static Ammo ammo = new Ammo(new Point(0, screenHeight - 3), new Rectangle(0,0));
 	
 	//initialize invader specifics
 	public static int invaderWidth = 35;
@@ -101,6 +106,7 @@ public class Screen extends JPanel implements KeyListener
 	public Screen()
 	{
 		explosionImg.setImageObserver(this);
+		shotCollisionImg.setImageObserver(this);
 		powerupImg.setImageObserver(this);
 		
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -113,6 +119,8 @@ public class Screen extends JPanel implements KeyListener
 		
 	    Lives playerLives = new Lives(new Point(screenWidth/2 - 100, 30), new Rectangle(0,0));
 		screenObjects.add(playerLives);
+		
+		screenObjects.add(ammo);
 		
 		screenObjects.add(level);
 		
@@ -277,6 +285,11 @@ public class Screen extends JPanel implements KeyListener
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
+			if(screenObjects.get(0) instanceof Ship) {
+				Ship playerShip = (Ship) screenObjects.get(0);
+				currentAmmo = playerShip.getAmmo();
+			}
+			
 			mysteryPoints = 50;
 			int rand = generator.nextInt(5) + 1;
 			mysteryPoints = mysteryPoints * rand;
@@ -311,6 +324,25 @@ public class Screen extends JPanel implements KeyListener
 							// Check for collisions
 							if(movingObj.collide(otherMovingObj)) {
 								
+								// If a player's shot and an invader shot collide
+								if(movingObj instanceof ShipProjectile && otherMovingObj instanceof AlienProjectile) {
+									// remove the ship projectile
+									screenObjects.remove(j);
+									
+									// remove the alien projectile
+									screenObjects.remove(i);
+									
+									// play sound
+									File shotCollisionSound = new File("shotCollision.WAV");
+									playSound(shotCollisionSound);
+									
+									// explosion effect
+									Explosion shotCollision = new Explosion(movingObj.getLocation(), 
+											new Rectangle(100, 100), shotCollisionImg.getImage(), 0, 35);
+									shotCollision.setArbitraryVector(new ObjectVector(0, 0));
+									screenObjects.add(shotCollision);
+								}
+								
 								// If the player picks up a powerup
 								if(movingObj instanceof Ship && otherMovingObj instanceof Powerup) {
 									// remove the powerup
@@ -332,7 +364,7 @@ public class Screen extends JPanel implements KeyListener
 																		
 									// explosion effect
 									Explosion explosion = new Explosion(movingObj.getLocation(), 
-											movingObj.getSize(), explosionImg.getImage(), 0);
+											movingObj.getSize(), explosionImg.getImage(), 0, 10);
 									explosion.setArbitraryVector(new ObjectVector(0, 0));
 									screenObjects.add(explosion);
 									
@@ -383,7 +415,7 @@ public class Screen extends JPanel implements KeyListener
 									
 									// explosion effect
 									Explosion explosion = new Explosion(movingObj.getLocation(), 
-											movingObj.getSize(), explosionImg.getImage(), 0);
+											movingObj.getSize(), explosionImg.getImage(), 0, 10);
 									explosion.setArbitraryVector(new ObjectVector(0, 0));
 									screenObjects.add(explosion);
 									
@@ -457,7 +489,7 @@ public class Screen extends JPanel implements KeyListener
 									if(damagedBunker.getHitPoints() == 0) {
 										screenObjects.remove(i);
 										
-										// play sound
+										// play destroyed sound
 										File shotSound = new File("shipExplosion.WAV");
 										playSound(shotSound);
 									}
@@ -473,7 +505,7 @@ public class Screen extends JPanel implements KeyListener
 									
 									// explosion effect
 									Explosion explosion = new Explosion(movingObj.getLocation(), 
-											movingObj.getSize(), explosionImg.getImage(), 0);
+											movingObj.getSize(), explosionImg.getImage(), 0, 10);
 									explosion.setArbitraryVector(new ObjectVector(0, 0));
 									screenObjects.add(explosion);
 									
@@ -554,20 +586,20 @@ public class Screen extends JPanel implements KeyListener
 			}
 			
 			//randomly generate an alien shot
-			for (ScreenObject obj: screenObjects) {
+			for (int i = 0; i < screenObjects.size(); i++) {
+				ScreenObject obj = screenObjects.get(i);
 				if (obj instanceof Invader) {
 					if (Math.random() < .0005 + (.0005*(level.getLevelNumber()/2))){
-					timer.stop();
-					fireFromX = (int) obj.getLocation().getX();
-					fireFromY = (int) obj.getLocation().getY();
-					AlienProjectile alienShot = new AlienProjectile(new Point(fireFromX, fireFromY), new Rectangle(7, 30), alienShotImg.getImage(), 180);
-					alienShot.setArbitraryVector(new ObjectVector(0,7));
-					screenObjects.add(alienShot);
-					timer.start();
-					File shotSound = new File("invaderShot.WAV");
-					playSound(shotSound);
+						timer.stop();
+						fireFromX = (int) obj.getLocation().getX();
+						fireFromY = (int) obj.getLocation().getY();
+						AlienProjectile alienShot = new AlienProjectile(new Point(fireFromX, fireFromY), new Rectangle(7, 30), alienShotImg.getImage(), 180);
+						alienShot.setArbitraryVector(new ObjectVector(0,7));
+						screenObjects.add(alienShot);
+						timer.start();
+						File shotSound = new File("invaderShot.WAV");
+						playSound(shotSound);
 					}
-					
 				}
 			}			
 			
@@ -726,6 +758,10 @@ public class Screen extends JPanel implements KeyListener
 	 */
 	public static void setLevelDisplay(int currentLevel) {
 		Screen.levelDisplay = currentLevel;
+	}
+	
+	public static int getAmmo() {
+		return currentAmmo;
 	}
 
 	/**
