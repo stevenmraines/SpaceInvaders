@@ -21,9 +21,9 @@ public class Explosion extends MovingScreenObject {
 	 * @param pv The point value
 	 * @angle angle The angle of the object.  
 	 */	
-	public Explosion(Point location, Rectangle size, Image i, double angle) {
+	public Explosion(Point location, Rectangle size, Image i, double angle, int expAge) {
 		super(location, size, i, angle);
-		age = 10;
+		age = expAge;
 	}
 	
 	/**
