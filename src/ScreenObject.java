@@ -14,8 +14,8 @@ public abstract class ScreenObject {
 	
 	/**
 	 * Create the screen object and its size and location.
-	 * @param location
-	 * @param size
+	 * @param location location of the screen object
+	 * @param size size of the screen object
 	 */
 	
 	public ScreenObject(Point location, Rectangle size){
@@ -52,6 +52,9 @@ public abstract class ScreenObject {
 		this.size = size;
 	}
 	
+	/**
+	 * 
+	 * @param g make all subclasses of screenobject have a draw method
+	 */
 	abstract public void draw(Graphics g);
-
 }

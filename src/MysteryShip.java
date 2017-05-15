@@ -1,7 +1,6 @@
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.Random;
 
 /**
  * 
@@ -11,33 +10,43 @@ import java.util.Random;
 
 public class MysteryShip extends Enemy {
 	
-	//TODO: Figure out how to generate random values in increments of 50.
-	protected int randomValue = 50;
+	//Generate a randomly selected mystery value between 50 and 250 
+
+	protected int mysteryValue;
 	
-	
+	/**
+	 * 
+	 * @param p location of the mystery ship
+	 * @param s size of the mystery ship
+	 * @param points value of the mystery ship
+	 * @param i image of the mystery ship
+	 */
 	public MysteryShip(Point p, Rectangle s, int points, Image i){
 		super(p, s, points, i);
-		randomValue = points;
+		mysteryValue = points;
 	}
+	
+	/**
+	 * Move the mystery ship
+	 */
 	public void move() 
 	{
 		location.x += arbitraryVector.getChangeX();
 		location.y += arbitraryVector.getChangeY();
 	}
 
-
 	/**
 	 * @return the randomValue
 	 */
-	public int getRandomValue() {
-		return randomValue;
+	public int getMysteryValue() {
+		return mysteryValue;
 	}
 
 
 	/**
 	 * @param randomValue the randomValue to set
 	 */
-	public void setRandomValue(int randomValue) {
-		this.randomValue = randomValue;
+	public void setMysteryValue(int randomValue) {
+		this.mysteryValue = randomValue;
 	}
 }
